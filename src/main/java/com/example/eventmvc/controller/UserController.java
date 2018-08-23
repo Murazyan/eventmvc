@@ -1,6 +1,7 @@
 package com.example.eventmvc.controller;
 
 import com.example.eventmvc.model.User;
+import com.example.eventmvc.repository.EventRepository;
 import com.example.eventmvc.repository.UserRepository;
 import com.example.eventmvc.security.CurrentUser;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -35,6 +36,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EventRepository eventRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -49,6 +52,8 @@ public class UserController {
     public String index() {
         return "index-01";
     }
+
+
     @GetMapping("/index")
     public String index1() {
         return "index";
@@ -72,11 +77,13 @@ public class UserController {
     public String bloglgpostgrid(ModelMap modelMap,
                                  @AuthenticationPrincipal CurrentUser currentUser) {
         modelMap.addAttribute("currentUser", currentUser.getUser());
+        modelMap.addAttribute("currentUsersEvent", eventRepository.findAllByCreaterUser(currentUser.getUser()));
+
         return "user-page";
     }
 
-    @PostMapping("/addUser")
-    public String addUser(@ModelAttribute User user, @RequestParam(name = "picture") MultipartFile multipartFile) throws IOException, ParseException {
+    @PostMapping("/register")
+    public String addUser(@ModelAttribute User user, @RequestParam(name = "picture") MultipartFile multipartFile) throws IOException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         File file = new File(imageUploadDir);
         if (!file.exists()) {

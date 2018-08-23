@@ -25,14 +25,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/blog-lg-post-grid").hasAnyAuthority("user")
-                .antMatchers("/page-contact-basic").hasAnyAuthority("ADMIN","TEACHER","PUPIL", "GUEST")
-                .antMatchers("/blog-contained").hasAnyAuthority("ADMIN","TEACHER","PUPIL", "GUEST")
-                .antMatchers("/add-article").hasAnyAuthority("ADMIN","TEACHER","PUPIL", "GUEST")
-                .antMatchers("/question-readmore").hasAnyAuthority("ADMIN","TEACHER","PUPIL", "GUEST")
-                .antMatchers("/guestUser").hasAnyAuthority("ADMIN","TEACHER","PUPIL", "GUEST")
-                .antMatchers("/search").hasAnyAuthority("ADMIN","TEACHER","PUPIL", "GUEST")
-                .antMatchers("/message").hasAnyAuthority("ADMIN","TEACHER","PUPIL", "GUEST")
+                .antMatchers("/add-event-page").hasAnyAuthority("user")
+                .antMatchers("/add-event").hasAnyAuthority("user")
+
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()

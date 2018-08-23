@@ -22,7 +22,6 @@ public   class Event {
     @Column
     private int id;
     @ManyToOne(cascade = CascadeType.REFRESH)
-
     private User createrUser;
     @Column(name = "creater_visibility")
     private boolean createrVisibility;
@@ -46,9 +45,8 @@ public   class Event {
     private int maxCountPerson;
     @Column(name = "current_count_person")
     private int currentCountPerson;
-    @Column(name = "event_status")
-    @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus;
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    private EventStatusC eventStatus;
     @Column(name = "preferences_themes")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "event_theme",
