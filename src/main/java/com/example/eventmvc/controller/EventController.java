@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class EventController {
@@ -56,7 +58,20 @@ public class EventController {
             ModelMap modelMap) {
         modelMap.addAttribute("event", new Event());
         modelMap.addAttribute("allstatus", eventStatusCRepository.findAll());
-
         return "add-event";
     }
+
+//    @PostMapping("/chear-event")
+//    public String searchEvent(ModelMap modelMap,
+//                              @RequestParam(value = "keyword") String text){
+//        List<Event> result = new ArrayList<>();
+//        List<Event> events = eventRepository.findAllByEventAccessType(true);
+//        for (Event event : events) {
+//            if(event.getEventName().contains(text)){
+//                result.add(event);
+//            }
+//        }
+//        modelMap.addAllAttributes("searchUsers")
+//
+//    }
 }
