@@ -1,7 +1,9 @@
 package com.example.eventmvc.controller;
 
-import com.example.eventmvc.model.User;
+import com.example.eventmvc.model.*;
 import com.example.eventmvc.repository.EventRepository;
+import com.example.eventmvc.repository.EventUsersRepository;
+import com.example.eventmvc.repository.UserEventStatusRepository;
 import com.example.eventmvc.repository.UserRepository;
 import com.example.eventmvc.security.CurrentUser;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -25,7 +27,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -36,8 +41,15 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private EventUsersRepository eventUsersRepository;
+
+    @Autowired
+    private UserEventStatusRepository userEventStatusRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -71,6 +83,19 @@ public class UserController {
         if (currentUser != null) {
             return "redirect:/user_page";
         } else return "redirect:/index";
+    }
+    @PostMapping("/addContact")
+    public String addContact(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "userId") Integer userId) {
+        User contactUser = userRepository.findAllById(userId);
+       // List<User> result = new ArrayList<>();
+      //  result.add(contactUser);
+        CurrentUser currentUser = (CurrentUser) userDetails;
+        User user = currentUser.getUser();
+     List<User> contactUser1 = user.getContactUser();
+        contactUser1.add(contactUser);
+        user.setContactUser(contactUser1);
+        userRepository.save(user);
+        return "redirect:/user_page";
     }
 
     @GetMapping("/user_page")
@@ -108,4 +133,45 @@ public class UserController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         IOUtils.copy(in, response.getOutputStream());
     }
-}
+
+    @GetMapping("/searchUser")
+    public String searchUser(ModelMap map, @RequestParam(value = "keyword") String text) {
+        List<User> result = new ArrayList<>();
+        List<User> all = userRepository.findAll();
+        for (User user : all) {
+            if(user.getNickname().contains(text)){
+            result.add(user);
+            }
+        }
+        map.addAttribute("searchUser", result);
+        return "searchUser";
+        }
+
+        @PostMapping("/searchEvent")
+    public String searchUSer(ModelMap modelMap,@RequestParam(value = "eventName") String eventName){
+            List<Event> result = new ArrayList<>();
+            List<Event> all = eventRepository.findAll();
+            for (Event event : all) {
+                if(event.isEventAccessType() && event.getEventName().contains(eventName) && event.getEventStatus().getStatus().equals("Ընթացիկ")){
+                    result.add(event);
+                }
+            }
+            modelMap.addAttribute("searchEvent", result);
+            return "searchEvent";
+        }
+
+        @PostMapping("/addmyevent")
+    public String addMyEvent(@RequestParam(value = "eventId") Integer eventId,
+                             @AuthenticationPrincipal CurrentUser currentUser){
+            User user = currentUser.getUser();
+            Event event = eventRepository.findAllById(eventId);
+            EventUsers eventUsers = new EventUsers();
+            eventUsers.setEvent(event);
+            eventUsers.setUser(user);
+            UserEventStatus byId = userEventStatusRepository.findAllById(1);
+            eventUsers.setUserStatus(byId);
+            eventUsersRepository.save(eventUsers);
+            return "redirect:/user_page";
+        }
+
+    }

@@ -11,4 +11,5 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event,Integer> {
     List<Event> findAllByCreaterUser(User user);
     List<Event> findAllByEventAccessType(boolean t);
+    Event findAllById(Integer id);
 }

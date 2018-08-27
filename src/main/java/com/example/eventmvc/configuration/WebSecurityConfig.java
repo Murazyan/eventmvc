@@ -27,6 +27,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/add-event-page").hasAnyAuthority("user")
                 .antMatchers("/add-event").hasAnyAuthority("user")
+                .antMatchers("/searchUsert").hasAnyAuthority("user")
+                .antMatchers("/addContact").hasAnyAuthority("user")
+                .antMatchers("/addmyevent").hasAnyAuthority("user")
 
                 .anyRequest().permitAll()
                 .and()

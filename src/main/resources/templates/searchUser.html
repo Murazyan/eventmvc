@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
@@ -70,8 +70,8 @@
 
         <nav class="navbar navbar-expand-lg navbar-light navbar-transparent bg-faded">
             <div class="search-inline">
-                <form action="searchUser">
-                    <input type="text"  name="keyword" class="form-control" placeholder="Օգտատիրոջ որոնում ըստ անվան...">
+                <form >
+                    <input type="text" class="form-control" placeholder="Իրադարձության որոնում ըստ անվան...">
                     <button type="submit"><i class="ti-search"></i></button>
                     <a href="javascript:void(0)" class="search-close"><i class="ti-close"></i></a>
                 </form>
@@ -406,63 +406,56 @@
             <div class="container">
                 <div class="row">
                     <div class=" col-md-8 ml-auto mr-auto">
-                        <h1 class='text-uppercase'>Անձնական էջ</h1>
+                        <h1 class='text-uppercase'>Որոնման արդյունքը</h1>
                     </div>
                 </div>
             </div>
         </div><!--page title end-->
-        <div class="mb40" style="width: 300px">
-            <form action="searchEvent" method="post">
-                <div class="input-group" >
-                    <input type="text" class="form-control" placeholder="Իրադարձության որոնում..." aria-describedby="basic-addon2" name="eventName">
-                    <button class="input-group-addon" id="basic-addon2"><i class="ti-search"></i></button>
-                </div>
-            </form>
-        </div><!--/col-->
         <div class="container mb30">
-             <article class="col-md-12 post-masonry mb40">                      
-                        <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${currentUser.getPicUrl()})}" alt="" class="img-fluid mb20"></a>
-                        <a href="blog-lg-post-grid"><h4 class="masonry-title mb0">It's not easy to create</h4></a>
-                        <ul class="post-meta list-inline">
-                                <li class="list-inline-item">
-                                    <i class="fa fa-user-circle-o" th:text=" ${currentUser.nickname}"></i>
-                                </li>
-                                <li class="list-inline-item">
-                                    <i class="fa fa-calendar-o" th:text=" ${currentUser.date}"></i>
-                                </li>
+
+             <!--<article class="col-md-12 post-masonry mb40">                      -->
+                        <!--<a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${currentUser.getPicUrl()})}" alt="" class="img-fluid mb20"></a>-->
+                        <!--<a href="blog-lg-post-grid"><h4 class="masonry-title mb0">It's not easy to create</h4></a>-->
+                        <!--<ul class="post-meta list-inline">-->
                                 <!--<li class="list-inline-item">-->
-                                    <!--<i class="fa fa-tags"></i> <a href="blog-lg-post-grid">Bootstrap4</a>-->
+                                    <!--<i class="fa fa-user-circle-o" th:text=" ${currentUser.nickname}"></i>-->
                                 <!--</li>-->
-                            </ul>
+                                <!--<li class="list-inline-item">-->
+                                    <!--<i class="fa fa-calendar-o" th:text=" ${currentUser.date}"></i>-->
+                                <!--</li>-->
+                                <!--&lt;!&ndash;<li class="list-inline-item">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<i class="fa fa-tags"></i> <a href="blog-lg-post-grid">Bootstrap4</a>&ndash;&gt;-->
+                                <!--&lt;!&ndash;</li>&ndash;&gt;-->
+                            <!--</ul>-->
                         <!--<p>-->
                             <!--Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus .-->
                         <!--</p>-->
-                        <a href='blog-lg-post-grid' class='btn btn-outline-secondary'>Read More</a>
-                    </article><!--article post-->
+                        <!--<a href='blog-lg-post-grid' class='btn btn-outline-secondary'>Read More</a>-->
+                    <!--</article>&lt;!&ndash;article post&ndash;&gt;-->
+                <!--<a href="/add-event-page"><h2 style="color: #9e4790">Ստեղծել նոր իրադարձություն</h2></a>-->
+            <!--<h3 style="color: #720E9E">Իմ ստեղծած իրադարձությունները</h3>-->
 
-                <a href="/add-event-page"><h2 style="color: #9e4790">Ստեղծել նոր իրադարձություն</h2></a>
-            <h3 style="color: #720E9E">Իմ ստեղծած իրադարձությունները</h3>
                 <div class="row" id="blog-masonry">
-
-                      
-                    <article class="col-md-4 post-masonry mb40"  th:each="e:${currentUsersEvent}">
+                    <article class="col-md-4 post-masonry mb40"  th:each="e:${searchUser}">
                         <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${e.getPicUrl()})}" alt="" class="img-fluid mb20"></a>
-                        <a href="blog-lg-post-grid"><h4 class="masonry-title mb0" th:text="${e.eventName}"></h4></a>
+                        <!--<a href="blog-lg-post-grid"><h4 class="masonry-title mb0" th:text="${e.username}"></h4></a>-->
                         <ul class="post-meta list-inline">
                                 <li class="list-inline-item">
-                                    <i class="fa fa-user-circle-o"></i> <a href="blog-lg-post-grid" th:text="${e.createrUser.nickname}"></a>
+                                    <i class="fa fa-user-circle-o"></i> <a href="blog-lg-post-grid" th:text="${e.nickname}"></a>
                                 </li>
                                 <li class="list-inline-item">
-                                    <i class="fa fa-calendar-o"></i> <a href="blog-lg-post-grid" th:text="${e.occurDate}"></a>
+                                    <a href="blog-lg-post-grid" th:text="${e.username}"></a>
                                 </li>
-                                <li class="list-inline-item">
-                                    <i class="fa fa-tags"></i> <a href="blog-lg-post-grid" th:text="${e.createDate}"></a>
-                                </li>
+                                <!--<li class="list-inline-item">-->
+                                    <!--<i class="fa fa-tags"></i> <a href="blog-lg-post-grid" th:text="${e.createDate}"></a>-->
+                                <!--</li>-->
                             </ul>
-                        <p>
-                            Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus .
-                        </p>
-                        <a href='blog-lg-post-grid' class='btn btn-outline-secondary'>Հրավիրել անձանց</a>
+                        <form action="addContact" method="post">
+                            <input type="submit"  class='btn btn-outline-secondary'  value="+"/>
+                            <input type="hidden" th:value="${e.id}" name="userId"/>
+                        </form>
+
+
                     </article><!--article post-->
                      <!--<article class="col-md-4 post-masonry mb40">                      -->
                         <!--<a href="blog-lg-post-grid"> <img src="images/img3.jpg" alt="" class="img-fluid mb20"></a>                       -->

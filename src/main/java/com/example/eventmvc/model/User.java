@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +32,11 @@ public class User {
     private String picUrl;
     @Column
     private String date;
-
-
+    @Column(name = "contact")
+    @ManyToMany(fetch = FetchType.EAGER)
+//    @ManyToMany
+    @JoinTable(name = "contact",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "contact_user_id"))
+    protected List<User> contactUser;
 }
