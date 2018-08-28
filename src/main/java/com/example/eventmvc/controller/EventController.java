@@ -53,6 +53,8 @@ public class EventController {
         eventRepository.save(event);
         return "redirect:/user_page";
     }
+
+
     @GetMapping("/add-event-page")
     public String pageRegister(
             ModelMap modelMap) {
@@ -60,6 +62,8 @@ public class EventController {
         modelMap.addAttribute("allstatus", eventStatusCRepository.findAll());
         return "add-event";
     }
+
+
 
 //    @PostMapping("/chear-event")
 //    public String searchEvent(ModelMap modelMap,

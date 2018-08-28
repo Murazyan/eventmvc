@@ -27,10 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -84,14 +81,15 @@ public class UserController {
             return "redirect:/user_page";
         } else return "redirect:/index";
     }
+
     @PostMapping("/addContact")
     public String addContact(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "userId") Integer userId) {
         User contactUser = userRepository.findAllById(userId);
-       // List<User> result = new ArrayList<>();
-      //  result.add(contactUser);
+        // List<User> result = new ArrayList<>();
+        //  result.add(contactUser);
         CurrentUser currentUser = (CurrentUser) userDetails;
         User user = currentUser.getUser();
-     List<User> contactUser1 = user.getContactUser();
+        List<User> contactUser1 = user.getContactUser();
         contactUser1.add(contactUser);
         user.setContactUser(contactUser1);
         userRepository.save(user);
@@ -101,8 +99,20 @@ public class UserController {
     @GetMapping("/user_page")
     public String bloglgpostgrid(ModelMap modelMap,
                                  @AuthenticationPrincipal CurrentUser currentUser) {
+
         modelMap.addAttribute("currentUser", currentUser.getUser());
         modelMap.addAttribute("currentUsersEvent", eventRepository.findAllByCreaterUser(currentUser.getUser()));
+
+        List<EventUsers> allByUserOrderByIdDesc = eventUsersRepository.findAllByUserOrderByIdDesc(userRepository.findAllById(currentUser.getUser().getId()));
+        HashSet<EventUsers> hashSet = new HashSet<>(allByUserOrderByIdDesc);
+//        hashSet.addAll(allByUserOrderByIdDesc);
+        List<Event> eventsCurrentUser = new ArrayList<>(hashSet.size());
+        for (EventUsers eventUsers : hashSet) {
+            eventsCurrentUser.add(eventUsers.getEvent());
+        }
+
+        modelMap.addAttribute("eventsOfCurrentUser",eventsCurrentUser);
+
 
         return "user-page";
     }
@@ -120,6 +130,7 @@ public class UserController {
         userRepository.save(user);
         return "redirect:/page-login";
     }
+
     @GetMapping("/page-register")
     public String pageRegister(ModelMap modelMap) {
         modelMap.addAttribute("user", new User());
@@ -128,7 +139,7 @@ public class UserController {
 
     @RequestMapping(value = "/image", method = RequestMethod.GET)
     public void getImageAsByteArray(HttpServletResponse response,
-                                    @RequestParam("fileName" ) String fileName) throws IOException {
+                                    @RequestParam("fileName") String fileName) throws IOException {
         InputStream in = new FileInputStream(imageUploadDir + fileName);
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         IOUtils.copy(in, response.getOutputStream());
@@ -139,39 +150,55 @@ public class UserController {
         List<User> result = new ArrayList<>();
         List<User> all = userRepository.findAll();
         for (User user : all) {
-            if(user.getNickname().contains(text)){
-            result.add(user);
+            if (user.getNickname().contains(text)) {
+                result.add(user);
             }
         }
         map.addAttribute("searchUser", result);
         return "searchUser";
-        }
-
-        @PostMapping("/searchEvent")
-    public String searchUSer(ModelMap modelMap,@RequestParam(value = "eventName") String eventName){
-            List<Event> result = new ArrayList<>();
-            List<Event> all = eventRepository.findAll();
-            for (Event event : all) {
-                if(event.isEventAccessType() && event.getEventName().contains(eventName) && event.getEventStatus().getStatus().equals("Ընթացիկ")){
-                    result.add(event);
-                }
-            }
-            modelMap.addAttribute("searchEvent", result);
-            return "searchEvent";
-        }
-
-        @PostMapping("/addmyevent")
-    public String addMyEvent(@RequestParam(value = "eventId") Integer eventId,
-                             @AuthenticationPrincipal CurrentUser currentUser){
-            User user = currentUser.getUser();
-            Event event = eventRepository.findAllById(eventId);
-            EventUsers eventUsers = new EventUsers();
-            eventUsers.setEvent(event);
-            eventUsers.setUser(user);
-            UserEventStatus byId = userEventStatusRepository.findAllById(1);
-            eventUsers.setUserStatus(byId);
-            eventUsersRepository.save(eventUsers);
-            return "redirect:/user_page";
-        }
-
     }
+
+    @PostMapping("/searchEvent")
+    public String searchUSer(ModelMap modelMap, @RequestParam(value = "eventName") String eventName) {
+        List<Event> result = new ArrayList<>();
+        List<Event> all = eventRepository.findAll();
+        for (Event event : all) {
+            if (event.isEventAccessType() && event.getEventName().contains(eventName) && event.getEventStatus().getStatus().equals("Ընթացիկ")) {
+                result.add(event);
+            }
+        }
+        modelMap.addAttribute("searchEvent", result);
+        return "searchEvent";
+    }
+
+    @PostMapping("/addmyevent")
+    public String addMyEvent(@RequestParam(value = "eventId") Integer eventId,
+                             @AuthenticationPrincipal CurrentUser currentUser) {
+        User user = currentUser.getUser();
+        Event event = eventRepository.findAllById(eventId);
+        EventUsers eventUsers = new EventUsers();
+        eventUsers.setEvent(event);
+        eventUsers.setUser(user);
+        UserEventStatus byId = userEventStatusRepository.findAllById(1);
+        eventUsers.setUserStatus(byId);
+        eventUsersRepository.save(eventUsers);
+        return "redirect:/user_page";
+    }
+
+    @GetMapping("/verifyError")
+    public String verifyError(ModelMap map,
+                              @AuthenticationPrincipal CurrentUser currentUser) {
+        map.addAttribute("isLoggedIn", currentUser != null);
+        return "verifyError";
+    }
+
+    @GetMapping("/seecontacts")
+    public String seecontacts(ModelMap modelMap,
+                              @AuthenticationPrincipal CurrentUser currentUser,
+                              @RequestParam(value = "eventId")String eventId ){
+        User user = currentUser.getUser();
+        modelMap.addAttribute("contactUser",user.getContactUser());
+        modelMap.addAttribute("eventId",eventId);
+        return "addperson";
+    }
+}

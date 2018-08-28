@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Իրադարձությունների վերահսկում</title>
+</head>
+<body>
+
+<div>
+    <article th:each="c:${contactUser}">
+        <div>
+            <div style="overflow: hidden; width: 500px">
+                <img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20" style="height: 100px">
+            </div>
+            <div th:text="${c.nickname}" style="  width: 200px; float:left"></div>
+            <div th:text="${c.username}" style=" overflow: hidden;"></div>
+            <div text="+" style="width: 200px; float:left"></div>
+        </div>
+    </article>
+
+
+</div>
+
+</body>
+</html>
