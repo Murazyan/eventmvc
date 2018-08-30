@@ -4,22 +4,75 @@
     <meta charset="UTF-8">
     <title>Իրադարձությունների վերահսկում</title>
 </head>
-<body>
+<body style='background-image: url("images/belyiy-fon-white-background.jpg")'>
 
 <div>
-    <article th:each="c:${contactUser}">
-        <div>
-            <div style="overflow: hidden; width: 500px">
-                <img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20" style="height: 100px">
-            </div>
-            <div th:text="${c.nickname}" style="  width: 200px; float:left"></div>
-            <div th:text="${c.username}" style=" overflow: hidden;"></div>
-            <div text="+" style="width: 200px; float:left"></div>
-        </div>
-    </article>
+    <!--<article th:each="c:${contactUser}">-->
+    <!--<div>-->
+    <!--<div style="overflow: hidden; width: 500px">-->
+    <!--<img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20" style="height: 100px">-->
+    <!--</div>-->
+    <!--<div th:text="${c.nickname}" style="  width: 200px; float:left"></div>-->
+    <!--<div th:text="${c.username}" style=" overflow: hidden;"></div>-->
+    <!--<div text="+" style="width: 200px; float:left"></div>-->
+    <!--</div>-->
+    <!--</article>-->
 
 
 </div>
 
+<div>
+    <!--<article th:each="c:${contactUser}">-->
+        <!--<div style="width: 150px; height: 150px">-->
+            <!--<div style="overflow: hidden;float: left; width: 500px" >-->
+                <!--<div style="overflow: hidden; width: 140px;float:left">-->
+                    <!--<img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20"-->
+                         <!--style="height: 100px">-->
+                <!--</div>-->
+                <!--<div style=" overflow: hidden">-->
+                    <!--<dl>-->
+                        <!--<dt style="border: outset; width: 70px; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1"><i>Անուն</i></dt>-->
+                        <!--<dd th:text="${c.nickname}" ></dd>-->
+                        <!--<dt style="border: outset; width: 70px; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1"><i>Էլ-հասցե</i></dt>-->
+                        <!--<dd th:text="${c.username}"></dd>-->
+                    <!--</dl>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div style="overflow: hidden; float:left; width: 100px; height: 70px">-->
+                <!--<h3 style="color:#720E9E"><marquee behavior ="alternate">Հրավիրել</marquee></h3>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<hr style="border: dashed #d2b1b3 1px"/>-->
+    <!--</article>-->
+
+
+
+
+    <article th:each="c:${contactUser}">
+        <div style="width: 150px; height: 150px">
+            <div style="overflow: hidden;float: left; width: 500px; vertical-align: text-top" >
+                <div style="overflow: hidden; vertical-align: text-top; float: left">
+                    <img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20"
+                         style="height: 100px">
+                </div>
+
+                <div style="overflow: hidden; float:right">
+                    <h3 style="color:#720E9E; width: 100px"> <marquee behavior ="alternate">Հրավիրել</marquee></h3>
+                </div>
+                <div style=" overflow: hidden; float: right">
+                    <dl>
+                        <dt style="border: outset; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1"><i>Անուն</i></dt>
+                        <dd th:text="${c.nickname}" ></dd>
+                        <dt style="border: outset;  color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1"><i>Էլ-հասցե</i></dt>
+                        <dd th:text="${c.username}"></dd>
+                    </dl>
+                </div>
+            </div>
+
+        </div>
+        <hr style="border: dashed #d2b1b3 1px"/>
+    </article>
+
+</div>
 </body>
 </html>

@@ -444,9 +444,11 @@
 <div class="page-titles-img title-space-lg bg-parallax parallax-overlay mb70" data-jarallax='{"speed": 0.2}'
      style='background-image: url("images/bg14.jpg")'>
     <div class="container">
+
         <div class="row">
             <div class=" col-md-8 ml-auto mr-auto">
-                <h1 class='text-uppercase'>Անձնական էջ</h1>
+              <h1 class='text-uppercase'>Անձնական էջ</h1>
+
             </div>
         </div>
     </div>
@@ -482,11 +484,11 @@
         <a href='blog-lg-post-grid' class='btn btn-outline-secondary'>Read More</a>
     </article><!--article post-->
 
-    <a href="/add-event-page"><h2 style="color: #9e4790">Ստեղծել նոր իրադարձություն</h2></a>
+   <marquee behavior="alternate"><a href="/add-event-page"><h2 style="color: #9e4790">Ստեղծել նոր իրադարձություն</h2></a></marquee>
 
 
 
-<h3 style="color: #720E9E">Գրանցված իրադարձություններ</h3>
+    <marquee>  <h3 style="color: #720E9E">Գրանցված իրադարձություններ</h3></marquee>
         <!--<input type="submit" value="Գրանցված իրադարձություններ" style="color: #720E9E"/>-->
 
 <div th:if="${eventsOfCurrentUser.size()!=0}">
@@ -516,7 +518,9 @@
     </article>
 
 </div>
-    <h3 style="color: #720E9E">Իմ ստեղծած իրադարձությունները</h3>
+   <marquee direction="right"><h3 style="color: #720E9E">Իմ ստեղծած իրադարձությունները</h3> </marquee>
+    <button onclick="myFunction()" class="taqcnel" id="ttt">Թաքցնել</button>
+    <button onclick="myFunction1()" class="ereval">Ցույց տալ</button>
     <div class="row" id="blog-masonry">
 
 
@@ -701,5 +705,37 @@
 <!-- jQuery first, then Tether, then Bootstrap JS. -->
 <script src="js/plugins/plugins.js"></script>
 <script src="js/assan.custom.js"></script>
+<script>
+    var t = document.getElementById("ttt");
+    var q = document.getElementsByClassName("ereval")[0];
+    q.style.display = "none";
+    function myFunction() {
+        t.style.display="none";
+        var x = document.getElementsByClassName("col-md-4 post-masonry mb40");
+        for (var i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+
+        var z= document.getElementsByClassName("ereval");
+        for (var i = 0; i<  z.length;i++) {
+            z[i].style.display ="initial"
+        }
+    }
+
+    function myFunction1() {
+        var x = document.getElementsByClassName("col-md-4 post-masonry mb40");
+        for (var i = 0; i < x.length; i++) {
+            x[i].style.display = "initial";
+        }
+        var y = document.getElementsByClassName("taqcnel");
+        for (var i = 0; i < y.length; i++) {
+            y[i].style.display = "initial";
+        }
+        var y = document.getElementsByClassName("ereval");
+        for (var i = 0; i < y.length; i++) {
+            y[i].style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>
