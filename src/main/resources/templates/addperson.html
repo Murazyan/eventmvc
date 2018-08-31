@@ -3,68 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>Իրադարձությունների վերահսկում</title>
+    <link rel="stylesheet" type="text/css" href="css/mystyle.css">
 </head>
-<body style='background-image: url("images/belyiy-fon-white-background.jpg")'>
+<body style='background-image: url("images/belyiy-fon-white-background.jpg") '>
+<div style="width: 200px; margin: auto">
+    <div style="">
+        <span style="color: #0E76A8"><b>Որոնում ըստ</b></span> <br/>
 
-<div>
-    <!--<article th:each="c:${contactUser}">-->
-    <!--<div>-->
-    <!--<div style="overflow: hidden; width: 500px">-->
-    <!--<img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20" style="height: 100px">-->
-    <!--</div>-->
-    <!--<div th:text="${c.nickname}" style="  width: 200px; float:left"></div>-->
-    <!--<div th:text="${c.username}" style=" overflow: hidden;"></div>-->
-    <!--<div text="+" style="width: 200px; float:left"></div>-->
-    <!--</div>-->
-    <!--</article>-->
+        <input type="radio" name="radio" value="1" id="r1" onclick="aa()" checked="true"/><label for="r1" style="color: #0E76A8">անվան</label>
+
+        <input type="radio" name="radio" value="0" id="r2" onclick="bb()"/> <label for="r1" style="color: #0E76A8">էլ-փոստի</label></div>
 
 
 </div>
+<div class="search">
+    <div class="searchByName" style="width: 50%; float: right;">
+        <form action="searchEvent" method="post" class="example">
+            <div class="input-group" style="margin: auto; width: 500px;">
+                <input type="text" class="form-control" placeholder="Որոնում ըստ անվան..."
+                       aria-describedby="basic-addon2" name="eventName">
+                <button type="submit" class="but" onmousemove="show()" onmouseout="hide()"><span class="tooltiptext2">Փնտրել</span>
+                </button>
 
+            </div>
+        </form>
+    </div>
+    <div class="searchByElpost" style="width: 50%; float: right">
+        <form action="searchEvent" method="post" class="example">
+            <div class="input-group" style="margin: auto; width: 500px">
+                <input type="text" class="form-control" placeholder="Որոնում ըստ էլ-հասցեի..."
+                       aria-describedby="basic-addon2" name="eventName">
+                <button type="submit" class="but" onmousemove="show()" onmouseout="hide()"><span class="tooltiptext2">Փնտրել</span>
+                </button>
+
+            </div>
+        </form>
+    </div>
+
+</div>
 <div>
-    <!--<article th:each="c:${contactUser}">-->
-        <!--<div style="width: 150px; height: 150px">-->
-            <!--<div style="overflow: hidden;float: left; width: 500px" >-->
-                <!--<div style="overflow: hidden; width: 140px;float:left">-->
-                    <!--<img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20"-->
-                         <!--style="height: 100px">-->
-                <!--</div>-->
-                <!--<div style=" overflow: hidden">-->
-                    <!--<dl>-->
-                        <!--<dt style="border: outset; width: 70px; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1"><i>Անուն</i></dt>-->
-                        <!--<dd th:text="${c.nickname}" ></dd>-->
-                        <!--<dt style="border: outset; width: 70px; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1"><i>Էլ-հասցե</i></dt>-->
-                        <!--<dd th:text="${c.username}"></dd>-->
-                    <!--</dl>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div style="overflow: hidden; float:left; width: 100px; height: 70px">-->
-                <!--<h3 style="color:#720E9E"><marquee behavior ="alternate">Հրավիրել</marquee></h3>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<hr style="border: dashed #d2b1b3 1px"/>-->
-    <!--</article>-->
-
-
-
-
     <article th:each="c:${contactUser}">
         <div style="width: 150px; height: 150px">
-            <div style="overflow: hidden;float: left; width: 500px; vertical-align: text-top" >
+            <div style="overflow: hidden;float: left; width: 500px; vertical-align: text-top">
                 <div style="overflow: hidden; vertical-align: text-top; float: left">
                     <img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20"
                          style="height: 100px">
                 </div>
-
                 <div style="overflow: hidden; float:right">
-                    <h3 style="color:#720E9E; width: 100px"> <marquee behavior ="alternate">Հրավիրել</marquee></h3>
+                    <h3 style="color:#720E9E; width: 100px">
+                        <marquee behavior="alternate">Հրավիրել</marquee>
+                    </h3>
                 </div>
-                <div style=" overflow: hidden; float: right">
+                <div style=" overflow: hidden; float: right; width: 250px ;height: 150px" class="tooltip">
                     <dl>
-                        <dt style="border: outset; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1"><i>Անուն</i></dt>
-                        <dd th:text="${c.nickname}" ></dd>
-                        <dt style="border: outset;  color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1"><i>Էլ-հասցե</i></dt>
-                        <dd th:text="${c.username}"></dd>
+                        <dt style="border: outset; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1">
+                            <i>Անուն</i></dt>
+                        <dd th:text="${c.nickname}"></dd>
+                        <span class="tooltiptext" th:text="${c.username}"></span>
+
                     </dl>
                 </div>
             </div>
@@ -72,7 +68,32 @@
         </div>
         <hr style="border: dashed #d2b1b3 1px"/>
     </article>
-
 </div>
+<script>
+    var x = document.getElementsByClassName("tooltiptext2");
+    for(var i = 0; i<x.length;i++){
+        x[i].style.display = "inline";}
+    function show() {
+        for(var i = 0; i<x.length;i++){
+            x[i].style.display = "none";}
+    }
+    function hide() {
+        for(var i = 0; i<x.length;i++){
+            x[i].style.display = "initial";}
+
+    }
+    var radios = document.getElementsByName('radio');
+    var searchByName = document.getElementsByClassName("searchByName")[0];
+    var searchByElpost = document.getElementsByClassName("searchByElpost")[0];
+    searchByElpost.style.display = "none";
+    function aa() {
+        searchByName.style.display = "initial";
+        searchByElpost.style.display = "none";
+    }
+    function bb() {
+        searchByName.style.display = "none";
+         searchByElpost.style.display = "initial";
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,83 @@
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    width: 100px;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    height: 14px;
+    background-color: #b3e9ff;
+    color: #0b0b0b;
+
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 5s;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity:  5;
+}
+.search{
+    width: 1000px;
+    height: 50px;
+}
+
+/* Style the search field */
+form.example input[type=text] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 80%;
+    background: #f1f1f1;
+}
+
+/* Style the submit button */
+form.example button {
+    float: right;
+    width: 14%;
+    height: 42px;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 11px;
+    border: 1px solid grey;
+    border-left: none; /* Prevent double borders */
+    cursor: pointer;
+}
+
+form.example button:hover {
+    background: #d5bfda;
+    visibility: visible;
+}
+
+/* Clear floats */
+form.example::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+.but.tooltiptext2 {
+
+    visibility: hidden;
+    width: 200px;
+    height: 14px;
+    background-color: red;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+.but:hover .tooltiptext2 {
+    visibility: visible;
+}

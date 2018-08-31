@@ -13130,18 +13130,18 @@ tbody.collapse.show {
   pointer-events: none;
 }
 
-.input-group {
-  position: relative;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  -webkit-box-align: stretch;
-  -ms-flex-align: stretch;
-  align-items: stretch;
-  width: 100%;
-}
+/*.input-group {*/
+  /*position: relative;*/
+  /*display: -webkit-box;*/
+  /*display: -ms-flexbox;*/
+  /*display: flex;*/
+  /*-ms-flex-wrap: wrap;*/
+  /*flex-wrap: wrap;*/
+  /*-webkit-box-align: stretch;*/
+  /*-ms-flex-align: stretch;*/
+  /*align-items: stretch;*/
+
+/*}*/
 
 .input-group>.custom-file,
 .input-group>.custom-select,
