@@ -60,6 +60,9 @@ public class UserController {
     @GetMapping("/home")
     public String index(ModelMap modelMap,
                         @AuthenticationPrincipal UserDetails userDetails) {
+        if(userDetails!=null){
+            return "redirect:/user_page";
+        }
         modelMap.addAttribute("isLoggedIn", userDetails!=null);
         return "index-01";
     }
@@ -114,7 +117,7 @@ public class UserController {
         }
 
         modelMap.addAttribute("eventsOfCurrentUser",eventsCurrentUser);
-
+        modelMap.addAttribute("isLoggedIn", currentUser!=null);
 
         return "user-page";
     }
@@ -202,5 +205,10 @@ public class UserController {
         modelMap.addAttribute("contactUser",user.getContactUser());
         modelMap.addAttribute("eventId",eventId);
         return "addperson";
+    }
+    @GetMapping("/forgot-password")
+    public String forgotPasswor (){
+      
+        return "forgot-password";
     }
 }

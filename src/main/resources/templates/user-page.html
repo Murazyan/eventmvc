@@ -179,8 +179,8 @@
                                     <div class="col-lg-3">
 
                                         <ul class="mega-inner-nav list-unstyled">
-                                            <li><a href="page-login"> Login</a></li>
-                                            <li><a href="page-register"> Register</a></li>
+                                            <li  th:if="${!isLoggedIn}"><a href="page-login"> Մուտք</a></li>
+                                            <li  th:if="${isLoggedIn}"><a href="/logout"> Դուրս գալ</a></li>
                                             <li><a href="page-fpassword">Forget password</a></li>
                                             <li><a href="page-success"> Success page</a></li>
                                             <li><a href="page-maintenence"> Maintenence mode</a></li>
