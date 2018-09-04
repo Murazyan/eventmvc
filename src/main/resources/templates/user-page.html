@@ -447,25 +447,27 @@
 
         <div class="row">
             <div class=" col-md-8 ml-auto mr-auto">
-              <h1 class='text-uppercase'>Անձնական էջ</h1>
+                <h1 class='text-uppercase'>Անձնական էջ</h1>
 
             </div>
         </div>
     </div>
 </div><!--page title end-->
-<div class="mb40" style="width: 300px">
+
+<div class="mb40" style="width: 800px">
     <form action="searchEvent" method="post">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Իրադարձության որոնում..."
-                   aria-describedby="basic-addon2" name="eventName">
+        <div class="input-group" style="align-content: right; width: 400px; height: 150px;">
+            <input type="text" style="width: 250px; height: 35px" placeholder="Իրադարձության որոնում..."
+                    name="eventName">
             <button class="input-group-addon" id="basic-addon2"><i class="ti-search"></i></button>
         </div>
     </form>
 </div><!--/col-->
 <div class="container mb30">
+
     <article class="col-md-12 post-masonry mb40">
         <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${currentUser.getPicUrl()})}" alt=""
-                                          class="img-fluid mb20"></a>
+                                          class="img-fluid mb20" style="border-radius: 80%"></a>
         <a href="blog-lg-post-grid"><h4 class="masonry-title mb0">It's not easy to create</h4></a>
         <ul class="post-meta list-inline">
             <li class="list-inline-item">
@@ -484,47 +486,16 @@
         <a href='blog-lg-post-grid' class='btn btn-outline-secondary'>Read More</a>
     </article><!--article post-->
 
-   <marquee behavior="alternate"><a href="/add-event-page"><h2 style="color: #9e4790">Ստեղծել նոր իրադարձություն</h2></a></marquee>
+    <marquee behavior="alternate"><a href="/add-event-page"><h2 style="color: #9e4790">Ստեղծել նոր իրադարձություն</h2>
+    </a></marquee>
 
 
+    <marquee><h3 style="color: #720E9E">Գրանցված իրադարձություններ</h3></marquee>
+    <!--<input type="submit" value="Գրանցված իրադարձություններ" style="color: #720E9E"/>-->
 
-    <marquee>  <h3 style="color: #720E9E">Գրանցված իրադարձություններ</h3></marquee>
-        <!--<input type="submit" value="Գրանցված իրադարձություններ" style="color: #720E9E"/>-->
+    <div th:if="${eventsOfCurrentUser.size()!=0}">
 
-<div th:if="${eventsOfCurrentUser.size()!=0}">
-
-    <article class="col-md-4 post-masonry mb40" th:each="e:${eventsOfCurrentUser}">
-        <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${e.getPicUrl()})}" alt=""
-                                          class="img-fluid mb20"></a>
-        <a href="blog-lg-post-grid"><h4 class="masonry-title mb0" th:text="${e.eventName}"></h4></a>
-        <ul class="post-meta list-inline">
-            <li class="list-inline-item">
-                <i class="fa fa-user-circle-o"></i> <a href="blog-lg-post-grid"
-                                                       th:text="${e.createrUser.nickname}"></a>
-            </li>
-            <li class="list-inline-item">
-                <i class="fa fa-calendar-o"></i> <a href="blog-lg-post-grid" th:text="${e.occurDate}"></a>
-            </li>
-            <li class="list-inline-item">
-                <i class="fa fa-tags"></i> <a href="blog-lg-post-grid" th:text="${e.createDate}"></a>
-            </li>
-        </ul>
-        <!--<p>-->
-        <!--Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et-->
-        <!--voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente-->
-        <!--delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus .-->
-        <!--</p>-->
-
-    </article>
-
-</div>
-   <marquee direction="right"><h3 style="color: #720E9E">Իմ ստեղծած իրադարձությունները</h3> </marquee>
-    <button onclick="myFunction()" class="taqcnel" id="ttt">Թաքցնել</button>
-    <button onclick="myFunction1()" class="ereval">Ցույց տալ</button>
-    <div class="row" id="blog-masonry">
-
-
-        <article class="col-md-4 post-masonry mb40" th:each="e:${currentUsersEvent}">
+        <article class="col-md-4 post-masonry mb40" th:each="e:${eventsOfCurrentUser}">
             <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${e.getPicUrl()})}" alt=""
                                               class="img-fluid mb20"></a>
             <a href="blog-lg-post-grid"><h4 class="masonry-title mb0" th:text="${e.eventName}"></h4></a>
@@ -545,9 +516,41 @@
             <!--voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente-->
             <!--delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus .-->
             <!--</p>-->
-            <form action="seecontacts" method="get" >
-            <input type="submit" value="Հրավիրել անձանց" class='btn btn-outline-secondary'/>
-            <input type="hidden" th:value="${e.id}" name="eventId"/>
+
+        </article>
+
+    </div>
+    <marquee direction="right"><h3 style="color: #720E9E">Իմ ստեղծած իրադարձությունները</h3></marquee>
+    <button onclick="myFunction()" class="taqcnel" id="ttt">Թաքցնել</button>
+    <button onclick="myFunction1()" class="ereval">Ցույց տալ</button>
+    <div class="row" id="blog-masonry">
+
+
+        <article class="col-md-4 post-masonry mb40" th:each="e:${currentUsersEvent}">
+            <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${e.getPicUrl()})}" alt=""
+                                              class="img-fluid mb20"
+                                              style=" border-radius: 30%;width: 250px; height: 200px"></a>
+            <a href="blog-lg-post-grid"><h4 class="masonry-title mb0" th:text="${e.eventName}"></h4></a>
+            <ul class="post-meta list-inline">
+                <li class="list-inline-item">
+                    <i class="fa fa-user-circle-o"></i> <a href="blog-lg-post-grid"
+                                                           th:text="${e.createrUser.nickname}"></a>
+                </li>
+                <li class="list-inline-item">
+                    <i class="fa fa-calendar-o"></i> <a href="blog-lg-post-grid" th:text="${e.occurDate}"></a>
+                </li>
+                <li class="list-inline-item">
+                    <i class="fa fa-tags"></i> <a href="blog-lg-post-grid" th:text="${e.createDate}"></a>
+                </li>
+            </ul>
+            <!--<p>-->
+            <!--Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et-->
+            <!--voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente-->
+            <!--delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus .-->
+            <!--</p>-->
+            <form action="seecontacts" method="get">
+                <input type="submit" value="Հրավիրել անձանց" class='btn btn-outline-secondary'/>
+                <input type="hidden" th:value="${e.id}" name="eventId"/>
             </form>
         </article><!--article post-->
         <!--<article class="col-md-4 post-masonry mb40">                      -->
@@ -709,16 +712,17 @@
     var t = document.getElementById("ttt");
     var q = document.getElementsByClassName("ereval")[0];
     q.style.display = "none";
+
     function myFunction() {
-        t.style.display="none";
+        t.style.display = "none";
         var x = document.getElementsByClassName("col-md-4 post-masonry mb40");
         for (var i = 0; i < x.length; i++) {
             x[i].style.display = "none";
         }
 
-        var z= document.getElementsByClassName("ereval");
-        for (var i = 0; i<  z.length;i++) {
-            z[i].style.display ="initial"
+        var z = document.getElementsByClassName("ereval");
+        for (var i = 0; i < z.length; i++) {
+            z[i].style.display = "initial"
         }
     }
 

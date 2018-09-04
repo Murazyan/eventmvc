@@ -57,8 +57,10 @@ public class UserController {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
 
-    @GetMapping("/index-01")
-    public String index() {
+    @GetMapping("/home")
+    public String index(ModelMap modelMap,
+                        @AuthenticationPrincipal UserDetails userDetails) {
+        modelMap.addAttribute("isLoggedIn", userDetails!=null);
         return "index-01";
     }
 

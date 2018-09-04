@@ -38,7 +38,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/loginSuccess")
-                .permitAll();
+                .permitAll()
+                .and()
+                .rememberMe()
+                .and();
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
