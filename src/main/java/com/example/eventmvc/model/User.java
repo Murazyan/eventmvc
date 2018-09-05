@@ -40,6 +40,8 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_user_id"))
     protected List<User> contactUser;
+    private boolean first_access_after_forgot;
+
 
     @Override
     public boolean equals(Object o) {

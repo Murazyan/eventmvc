@@ -1,5 +1,6 @@
 package com.example.eventmvc.configuration;
 
+import com.example.eventmvc.handler.CustomAuthenticationFailureHandler;
 import com.example.eventmvc.security.CurrentUserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +31,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/searchUsert").hasAnyAuthority("user")
                 .antMatchers("/addContact").hasAnyAuthority("user")
                 .antMatchers("/addmyevent").hasAnyAuthority("user")
-
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
@@ -38,7 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/loginSuccess")
+                .failureHandler(new CustomAuthenticationFailureHandler())
                 .permitAll()
+                .and()
+                .logout()
+                .logoutSuccessUrl("/home")
                 .and()
                 .rememberMe()
                 .and();

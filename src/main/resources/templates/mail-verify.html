@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" content="width=device-width">
+    <title>Իրադարձությունների վերահսկում</title>
+</head>
+<body style='background-image: url("images/4509439-pic-hd.jpg");background-repeat: no-repeat;width: 100%; height: 100%'>
+<!--Շնորհակալություն գրանցման համար-->
+<div>
+
+    <h2 th:switch="${isfirst}">
+        <h2 th:case="0" style="color: #ff151c">Էլ-հասցեի հաստատում։ Շնորհակալություն մեր հավելվածից օգտվելու համար։</h2>
+        <h2 th:case="1" style="color: #ff151c">Դուք արդեն հաստատել եք Ձեր Էլ-հասցեն։ Շնորհակալություն մեր հավելվածից օգտվելու համար։</h2>
+        <h2 th:case="*" style="color: #ff151c">Դուք ջնջվել եք մեր հավելվածից։ </h2>
+    </h2>
+
+    <div>
+        <h2 th:switch="${isfirst}">
+            <a href="/page-login"> <h2 th:case="0" style="color: #ff151c">Մուտք անձնական էջ</h2></a>
+            <a href="/page-login"><h2 th:case="1" style="color: #ff151c">Մուտք անձնական էջ</h2></a>
+            <a href="/page-register"><h2 th:case="*" style="color: #ff151c">Գրանցում</h2></a>
+        </h2>
+
+    </div>
+</div>
+
+
+</div>
+</body>
+</html>

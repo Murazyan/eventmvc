@@ -1,17 +1,17 @@
 package com.example.eventmvc.controller;
 
+import com.example.eventmvc.mail.EmailServiceImpl;
 import com.example.eventmvc.model.*;
 import com.example.eventmvc.repository.EventRepository;
 import com.example.eventmvc.repository.EventUsersRepository;
 import com.example.eventmvc.repository.UserEventStatusRepository;
 import com.example.eventmvc.repository.UserRepository;
 import com.example.eventmvc.security.CurrentUser;
+import com.example.eventmvc.security.JwtTokenUtil;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.hibernate.usertype.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -52,6 +51,12 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
+    @Autowired
+    private EmailServiceImpl emailService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
 
     String pattern = "YYYY-DD-MM";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -60,10 +65,10 @@ public class UserController {
     @GetMapping("/home")
     public String index(ModelMap modelMap,
                         @AuthenticationPrincipal UserDetails userDetails) {
-        if(userDetails!=null){
+        if (userDetails != null) {
             return "redirect:/user_page";
         }
-        modelMap.addAttribute("isLoggedIn", userDetails!=null);
+        modelMap.addAttribute("isLoggedIn", userDetails != null);
         return "index-01";
     }
 
@@ -80,11 +85,21 @@ public class UserController {
     }
 
     @GetMapping("/loginSuccess")
-    public String loginSuccess(@AuthenticationPrincipal UserDetails userDetails) {
+    public String loginSuccess(ModelMap modelMap,
+                               @AuthenticationPrincipal UserDetails userDetails) {
         CurrentUser currentUser = (CurrentUser) userDetails;
         if (currentUser != null) {
+            User user = currentUser.getUser();
+            if(user.isFirst_access_after_forgot()){
+                modelMap.addAttribute("currentUserUsername", user.getUsername());
+                return "redirect:/change-password";
+            }
             return "redirect:/user_page";
         } else return "redirect:/index";
+    }
+    @GetMapping("/change-password")
+    public String changePassword(){
+        return "change-password";
     }
 
     @PostMapping("/addContact")
@@ -116,8 +131,8 @@ public class UserController {
             eventsCurrentUser.add(eventUsers.getEvent());
         }
 
-        modelMap.addAttribute("eventsOfCurrentUser",eventsCurrentUser);
-        modelMap.addAttribute("isLoggedIn", currentUser!=null);
+        modelMap.addAttribute("eventsOfCurrentUser", eventsCurrentUser);
+        modelMap.addAttribute("isLoggedIn", currentUser != null);
 
         return "user-page";
     }
@@ -132,8 +147,38 @@ public class UserController {
         String filName = System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
         multipartFile.transferTo(new File(imageUploadDir + filName));
         user.setPicUrl(filName);
+        user.setToken(jwtTokenUtil.generateToken(user.getUsername()));
         userRepository.save(user);
+        String url = String.format("http://localhost:8081/verify?token=%s&username=%s", user.getToken(), user.getUsername());
+        String text = String.format("Dear %s Thank you, you have successfully registered to  our Evens_Tracker. Please visit by link in order to activate your profile.  %s", user.getNickname(), url);
+        emailService.sendSipmleMessage(user.getUsername(), "Իրադարձությունների վերահսկում", text);
         return "redirect:/page-login";
+    }
+
+    @GetMapping(value = "/verify")
+    public String verify(ModelMap modelMap,
+                         @RequestParam("token") String token,
+                         @RequestParam("username") String username) {
+
+        User allByUsername = userRepository.findAllByUsername(username);
+        try {
+            if (allByUsername.getToken() == null) {
+                modelMap.addAttribute("isfirst", "1");
+            }
+            if (allByUsername != null) {
+                if (allByUsername.getToken() != null && allByUsername.getToken().equals(token)) {
+                    allByUsername.setToken(null);
+                    //  allByUsername.setVerify(true);
+                    userRepository.save(allByUsername);
+                    modelMap.addAttribute("isfirst", "0");
+                }
+
+            }
+        } catch (Exception e) {
+            modelMap.addAttribute("isfirst", "2");
+
+        }
+        return "mail-verify";
     }
 
     @GetMapping("/page-register")
@@ -191,24 +236,65 @@ public class UserController {
     }
 
     @GetMapping("/verifyError")
-    public String verifyError(ModelMap map,
-                              @AuthenticationPrincipal CurrentUser currentUser) {
-        map.addAttribute("isLoggedIn", currentUser != null);
+    public String verifyError() {
         return "verifyError";
     }
 
-    @GetMapping("/seecontacts")
-    public String seecontacts(ModelMap modelMap,
+    @GetMapping("/seeContacts")
+    public String seeContacts(ModelMap modelMap,
                               @AuthenticationPrincipal CurrentUser currentUser,
-                              @RequestParam(value = "eventId")String eventId ){
+                              @RequestParam(value = "eventId") String eventId) {
         User user = currentUser.getUser();
-        modelMap.addAttribute("contactUser",user.getContactUser());
-        modelMap.addAttribute("eventId",eventId);
+        modelMap.addAttribute("contactUser", user.getContactUser());
+        modelMap.addAttribute("eventId", eventId);
         return "addperson";
     }
-    @GetMapping("/forgot-password")
-    public String forgotPasswor (){
-      
+
+    @PostMapping("validMail")
+    public String validMail(ModelMap modelMap,
+                                  @RequestParam(value = "email") String email) {
+        User user = userRepository.findAllByUsername(email);
+        modelMap.addAttribute("userFound", user!=null);
+        if(user!=null){
+            String newPassword = getRandomPassword(6);
+            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setFirst_access_after_forgot(true);
+            userRepository.save(user);
+            String text = "Ձեզ համար գեներացվել է մեկանգամյա օգտագործման  գաղտնաբառ`  " + newPassword;
+            emailService.sendSipmleMessage(user.getUsername(), "Իրադարձությունների վերահսկում - գաղտնաբառի վերականգնում", text);
+            return "redirect:/page-login";
+        }else{
+            modelMap.addAttribute("userNotFound", "Սխալ մուտքագրված էլ-հասցե");
+        }
         return "forgot-password";
+    }
+
+    public static String getRandomPassword(int length_forgotPassword) {
+
+        final Random random = new Random();
+        final String CHARS = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ234567890!@#$*%&";
+        StringBuilder password = new StringBuilder(length_forgotPassword);
+        for (int i = 0; i < length_forgotPassword; i++) {
+            password.append(CHARS.charAt(random.nextInt(CHARS.length())));
+        }
+        return password.toString();
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword() {
+
+        return "forgot-password";
+    }
+    @PostMapping("/changeMyPassword")
+    public String changeMyPassword(@AuthenticationPrincipal CurrentUser currentUser,
+                                   @RequestParam(value = "newPass")String newPass){
+        User user = currentUser.getUser();
+        if(user==null){
+            return "redirect:/page-login";
+        }
+        user.setFirst_access_after_forgot(false);
+        user.setPassword(passwordEncoder.encode(newPass));
+        userRepository.save(user);
+        return "redirect:/user_page";
     }
 }

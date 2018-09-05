@@ -3,24 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>verifyError</title>
+    <link href="css/plugins/plugins.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
-<body>
-<ul class="dropdown-menu dropdown-menu-left">
-    <li><a href="contact-us">Contact Us</a></li>
-    <li><a href="terms-of-services">Terms and Conditions</a></li>
-    <li th:if="${!isLoggedIn}">
-        <a href="sign-up">Create Account</a>
-        <a href="/login">Login</a>
-    </li>
-    <li th:if="${isLoggedIn}">
-        <a href="/logout">Log out</a>
-        <a href="user-profile">User Profile</a>
-    </li>
-    <li><a href="pricing-table">Pricing</a></li>
-    <li><a href="payment-process">Payment</a></li>
-    <li><a href="how-it-works">How It Works</a></li>
-    <li><a href="comming-soon">Coming Soon</a></li>
-    <li><a href="404-page">404 Page</a></li>
-</ul>
+<body style="background-color: #8CD2E5">
+
+<div>
+    <a href="/home" class="nav-link" >Գլխավոր էջ</a>
+</div>
+<h3 style="color: #0d397c; text-align: center"><b> Կներեք, բայց Ձեր էլ - հասցեն ակտիվածված չէ։</b></h3>
+<h3 style="color: #0d397c; text-align: center"><b> Խնդրում ենք  էլ - հասեից ակտիվացնել Ձեր Էջը։</b></h3>
 </body>
 </html>
