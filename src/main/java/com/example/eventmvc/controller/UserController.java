@@ -239,6 +239,10 @@ public class UserController {
     public String verifyError() {
         return "verifyError";
     }
+//    @GetMapping("/map")
+//    public String gMap() {
+//        return "shortcode-gmap";
+//    }
 
     @GetMapping("/seeContacts")
     public String seeContacts(ModelMap modelMap,

@@ -15,7 +15,6 @@
     <div id="preloader-inner"></div>
 </div><!--/preloader-->
 
-
 <!-- Pushy Menu -->
 <aside class="pushy pushy-right">
     <div class="cart-content">
@@ -471,7 +470,7 @@
         <a href="blog-lg-post-grid"><h4 class="masonry-title mb0">It's not easy to create</h4></a>
         <ul class="post-meta list-inline">
             <li class="list-inline-item">
-                <i class="fa fa-user-circle-o" th:text=" ${currentUser.nickname}"></i>
+                <i id="m" class="fa fa-user-circle-o" th:text=" ${currentUser.nickname}"></i>
             </li>
             <li class="list-inline-item">
                 <i class="fa fa-calendar-o" th:text=" ${currentUser.date}"></i>
@@ -701,6 +700,10 @@
 <script src="js/plugins/plugins.js"></script>
 <script src="js/assan.custom.js"></script>
 <script>
+
+    setTimeout(function () {
+        var a = document.getElementById("m").innerHTML;
+    },10000)
     var t = document.getElementById("ttt");
     var q = document.getElementsByClassName("ereval")[0];
     q.style.display = "none";
