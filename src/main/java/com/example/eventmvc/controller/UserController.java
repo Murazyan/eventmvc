@@ -73,10 +73,6 @@ public class UserController {
     }
 
 
-    @GetMapping("/index")
-    public String index1() {
-        return "index";
-    }
 
     @GetMapping("/page-login")
     public String pageLogin(ModelMap map) {
@@ -289,6 +285,7 @@ public class UserController {
 
         return "forgot-password";
     }
+
     @PostMapping("/changeMyPassword")
     public String changeMyPassword(@AuthenticationPrincipal CurrentUser currentUser,
                                    @RequestParam(value = "newPass")String newPass){

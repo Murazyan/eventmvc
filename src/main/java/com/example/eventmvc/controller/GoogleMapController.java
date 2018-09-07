@@ -2,10 +2,14 @@ package com.example.eventmvc.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Base64;
+
 @Controller
 public class GoogleMapController {
     @GetMapping("/map")
     public String map(){
+
         return "google-map";
     }
 
