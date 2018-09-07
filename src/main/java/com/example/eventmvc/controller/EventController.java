@@ -63,6 +63,14 @@ public class EventController {
         return "add-event";
     }
 
+    @GetMapping("/seeEvent")
+    public String seeEvent(ModelMap modelMap,
+                           @AuthenticationPrincipal CurrentUser currentUser,
+                           @RequestParam(value = "eventId") int eventId) {
+        Event event = eventRepository.findAllById(eventId);
+        modelMap.addAttribute("current_event", event);
+        return "see-event";
+    }
 
 
 //    @PostMapping("/chear-event")

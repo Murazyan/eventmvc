@@ -53,6 +53,11 @@ public   class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "theme_id"))
     private List<PreferencesThemes> preferencesThemes;
+    @Column
+    private double longitude;
+    @Column
+    private double latitude;
+
     @Override
     public String toString() {
         return "Event{" +

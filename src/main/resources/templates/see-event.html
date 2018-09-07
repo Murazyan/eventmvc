@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Assan 3.0</title>
+    <!-- Plugins CSS -->
+    <link href="css/plugins/plugins.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container mb70" th:each="e:${current_event}">
+
+    <div id="markermap" style="width: 50%;height: 500px; float: left"></div>
+    <div style="width: 50%; height: 500px; float: right"> <!--allInformations-->
+        <div style="height: 70%">  <!--picture-->
+            <img th:src="@{/image(fileName=${current_event.getPicUrl()})}" alt="" class="img-fluid mb20">
+        </div>
+        <div> <!--text-informations-->
+            <label for="eventName"><b style="color: #0d397c">Անվանումը</b></label>
+        <i th:text="${current_event.eventName}" id="eventName" style="color: #08467c"></i><br/>
+        </div>
+        <div> <!--text-informations-->
+            <label for="event-address"><b style="color: #0d397c">Հասցե</b></label>
+        <i th:text="${current_event.occurAddress}" id="event-address" style="color: #08467c"></i>
+        </div>
+        <div> <!--text-informations-->
+            <label for="event-date"><b style="color: #0d397c">Տեղի ունենալու ամսաթիվը</b></label>
+        <i th:text="${current_event.occurDate}" id="event-date" style="color: #08467c"></i>
+        </div>
+        <div> <!--text-informations-->
+            <label for="event-date"><b style="color: #0d397c">Մասնակիցների առավելագույն թիվը</b></label>
+        <i th:text="${current_event.maxCountPerson}" id="event-date" style="color: #08467c"></i>
+        </div>
+
+        <input type="hidden" th:value="${current_event.longitude}" id="longitude">
+        <input type="hidden" th:value="${current_event.latitude}" id = "latitude">
+    </div>
+</div>
+
+
+<!--back to top-->
+<a href="see-event" class="back-to-top hidden-xs-down" id="back-to-top"><i class="ti-angle-up"></i></a>
+<!-- jQuery first, then Tether, then Bootstrap JS. -->
+<script src="js/plugins/plugins.js"></script>
+<script src="js/assan.custom.js"></script>
+<!-- google maps -->
+<!-- page scripts -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMwVpUj3-oHHW8N21819BhKttOga2Rj2s"></script>
+<script src="js/jquery.gmap.min.js"></script>
+<script src="js/gmaps-custom.js"></script>
+<script>
+
+    $(document).ready(function () {
+        var marker;
+        var longitude = document.getElementById('longitude').value;
+        var latitude = document.getElementById('latitude').value;
+        var myLating = new google.maps.LatLng(latitude, longitude);
+        var eventaddress= document.getElementById('event-address').innerHTML;
+
+        map = new GMaps({
+            scrollwheel: false,
+            el: '#markermap',
+            lat: latitude,
+            lng: longitude
+            // lat: 34.043333,
+            // lng: -78.028333
+
+        });
+        map.addMarker({
+            lat: latitude,
+            lng: longitude,
+            title: 'Marker with InfoWindow',
+            infoWindow: {
+                content: '<p >'+eventaddress+'</p>'
+            }
+        });
+    });
+</script>
+</body>
+</html>
