@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:cl="https://cloudinary.com/jsp/taglib">
+
 <head>
     <!-- Required meta tags -->
+    <!--<%@taglib uri="https://cloudinary.com/jsp/taglib" prefix="cl" %>-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Assan 3.0</title>
     <!-- Plugins CSS -->
     <link href="css/plugins/plugins.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+
+
 </head>
 
 <body>
@@ -461,12 +465,14 @@
             <button class="input-group-addon" id="basic-addon2"><i class="ti-search"></i></button>
         </div>
     </form>
+    <a href="/add-image"><h3>Ավելացնել նոր լուսանկար</h3></a>
 </div><!--/col-->
 <div class="container mb30">
 
     <article class="col-md-12 post-masonry mb40">
         <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${currentUser.getPicUrl()})}" alt=""
                                           class="img-fluid mb20" style="border-radius: 80%"></a>
+        <!--<cl:image th:src="@{/image(fileName=${currentUser.getPicUrl()})}" width="90" height="90" crop="thumb" gravity="face"/>-->
         <a href="blog-lg-post-grid"><h4 class="masonry-title mb0">It's not easy to create</h4></a>
         <ul class="post-meta list-inline">
             <li class="list-inline-item">
@@ -529,6 +535,7 @@
             <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${e.getPicUrl()})}" alt=""
                                               class="img-fluid mb20"
                                               style=" border-radius: 30%;width: 250px; height: 200px"></a>
+            <!--<cl:image th:src="@{/image(fileName=${e.getPicUrl()})}" width="90" height="90" crop="thumb" gravity="face"/>-->
             <form action="/seeEvent" method="get">
                 <input type="submit" th:name="eventId1" th:value="${e.eventName}" class="masonry-title mb0" >
                 <input type="hidden" th:name="eventId" th:value="${e.id}" class="masonry-title mb0" >

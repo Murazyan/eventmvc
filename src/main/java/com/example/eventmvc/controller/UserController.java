@@ -12,6 +12,7 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,12 +20,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -62,6 +63,42 @@ public class UserController {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
 
+
+
+
+    @PostMapping("add-picture")
+    public String addImage(@RequestParam(name = "str") String byteArray,
+                                   @RequestParam(name = "currentUserUsername")String currentUserUsername){
+        User currentUser = userRepository.findAllByUsername(currentUserUsername);
+        String picUrl = currentUser.getPicUrl();
+        if(picUrl!=null){
+            File fil = new File(imageUploadDir+currentUser.getPicUrl());
+            if(fil.exists()){
+                fil.delete();
+            }
+        }
+        BufferedImage image = null;
+        byte[] imageByte;
+        try {
+            BASE64Decoder decoder = new BASE64Decoder();
+            imageByte = decoder.decodeBuffer(byteArray);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();
+            String fileName = System.currentTimeMillis()+String.valueOf(Math.random())+".jpg";
+            String path =imageUploadDir+fileName;
+            currentUser.setPicUrl(fileName);
+            userRepository.save(currentUser);
+            File file = new File(path);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            ImageIO.write(image, "jpg", file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "redirect:/user_page";
+    }
     @GetMapping("/home")
     public String index(ModelMap modelMap,
                         @AuthenticationPrincipal UserDetails userDetails) {
@@ -78,6 +115,13 @@ public class UserController {
     public String pageLogin(ModelMap map) {
         map.addAttribute("login_user", new User());
         return "page-login";
+    }
+
+    @GetMapping("/add-image")
+    public String pageLoginEx(@AuthenticationPrincipal UserDetails userDetails,
+                              ModelMap modelMap) {
+        modelMap.addAttribute("currentUserUsername", userDetails.getUsername());
+        return "standalone-remote-upload";
     }
 
     @GetMapping("/loginSuccess")
@@ -115,8 +159,12 @@ public class UserController {
     @GetMapping("/user_page")
     public String bloglgpostgrid(ModelMap modelMap,
                                  @AuthenticationPrincipal CurrentUser currentUser) {
+        if(currentUser==null){
+            return "redirect:/home";
+        }
 
-        modelMap.addAttribute("currentUser", currentUser.getUser());
+        modelMap.addAttribute("currentUser", userRepository.findAllByUsername(currentUser.getUser().getUsername()));
+
         modelMap.addAttribute("currentUsersEvent", eventRepository.findAllByCreaterUser(currentUser.getUser()));
 
         List<EventUsers> allByUserOrderByIdDesc = eventUsersRepository.findAllByUserOrderByIdDesc(userRepository.findAllById(currentUser.getUser().getId()));
@@ -150,6 +198,8 @@ public class UserController {
         emailService.sendSipmleMessage(user.getUsername(), "Իրադարձությունների վերահսկում", text);
         return "redirect:/page-login";
     }
+
+
 
     @GetMapping(value = "/verify")
     public String verify(ModelMap modelMap,
@@ -187,6 +237,7 @@ public class UserController {
     public void getImageAsByteArray(HttpServletResponse response,
                                     @RequestParam("fileName") String fileName) throws IOException {
         InputStream in = new FileInputStream(imageUploadDir + fileName);
+
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         IOUtils.copy(in, response.getOutputStream());
     }
