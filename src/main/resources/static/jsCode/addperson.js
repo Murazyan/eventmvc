@@ -62,8 +62,9 @@ function myFunction2() {
                 dl.appendChild(span);
                 var invitation = document.createElement("div");
                 box.appendChild(invitation);
-                 console.log(body[2].userId);
+
                 if(body[i].isNull===0 || body[i].isNull===3){
+                    var picUrl = body[0].picUrl;
                     var f = document.createElement("form");
                     f.setAttribute('method',"post");
                     f.setAttribute('action',"/invitet");
@@ -79,14 +80,13 @@ function myFunction2() {
                     i1.setAttribute('value',document.getElementById("current-eventId").value);
                     i1.setAttribute('name',"invitedEventId");
                     f.appendChild(i1);
-
                     var i2 = document.createElement("input"); //input element, hidden for User-Id
+                    i2.id="inputForUserId";
+                    i2.value=picUrl;
                     i2.setAttribute('type', "hidden");
-
-                     i2.setAttribute('value',body[i].userId);
-                    i2.setAttribute('name',"contactUserId");
+                    // i2.setAttribute('value',picUrl);
+                    i2.setAttribute('name',"userPicUrl");
                     f.appendChild(i2);
-
                 }
             }
         });

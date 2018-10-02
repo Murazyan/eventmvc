@@ -51,10 +51,11 @@
 
 </div>
 <div id="results"></div>
-<script src="jsCode/addperson.js"></script>
+<!--<script src="jsCode/addperson.js"></script>-->
 <script src="jsCode/addperson1.js"></script>
 
 <div id="contactUserList">
+
     <article th:each="c:${contactUsers}">
         <div style="width: 150px; height: 150px" class="a">
             <div style="overflow: hidden;float: left; width: 719px; vertical-align: text-top" class="b">
@@ -80,7 +81,8 @@
                             <form action="/cancelEvent" method="post">
                                 <input type="submit" value="Չեղարկել հրավերը"
                                        style="color: #720E9E; height: 26px; width: 150px">
-                                <input type="hidden" id="currentEventId" th:name="canceledEventId" th:value="${eventId}">
+                                <input type="hidden" id="currentEventId" th:name="canceledEventId"
+                                       th:value="${eventId}">
                                 <input type="hidden" th:name="contactUserId" th:value="${c.getUser().id}">
                             </form>
                         </div>
@@ -106,6 +108,151 @@
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+
+<script>
+    var picurl;
+    var eventId;
+    var userId;
+    var userNickname;
+    var userUsername;
+    var hmtl = `<article >
+        <div style="width: 150px; height: 150px" class="a">
+        <div style="overflow: hidden;float: left; width: 719px; vertical-align: text-top" class="b">
+        <div style="overflow: hidden; vertical-align: text-top; float: left" class="c">
+        <img src="/image?fileName=${picurl}" alt="" class="img-fluid mb20"
+    style="height: 100px">
+        </div>
+        <div style="overflow: hidden; float:right; width: 151px">
+        <h3 style="color:#720E9E; width: 100px">
+        <form action="/invite" method="post">
+        <div id="payman1">
+        <marquee behavior="alternate"><input type="submit" value="Հրավիրել"
+    style="color: #720E9E; height: 26px">
+        <input type="hidden" name="invitedEventId" value="${eventId}">
+        <input type="hidden" name="contactUserId" value="${userId}">
+        </input>
+        </marquee>
+        </div>
+        </form>
+        <div id="payman2">
+        <form action="/cancelEvent" method="post">
+        <input type="submit" value="Չեղարկել հրավերը"
+    style="color: #720E9E; height: 26px; width: 150px">
+        <input type="hidden" id="currentEventId" name="canceledEventId" value="${eventId}">
+        <input type="hidden" name="contactUserId" value="${c.getUser().id}">
+        </form>
+        </div>
+        </h3>
+        </div>
+        <div style=" overflow: hidden; float: right; width: 231px ;height: 150px" class="tooltip">
+        <dl>
+        <dt style="border: outset; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1">
+        <i>Անուն</i></dt>
+    <dd text="${userNickname}"></dd>
+        <span class="tooltiptext" text="${userUsername}"></span>
+        </dl>
+        </div>
+        </div>
+        </div>
+        <hr style="border: dashed #d2b1b3 1px"/>
+        </article>`
+
+
+    var search;
+    var old_ajax;
+    document.getElementById("resultss").style.display = "none";
+
+    function myFunction2() {
+        document.getElementById("contactUserList").style.display = "none";
+        var parrent = document.getElementById("resultss");
+        var child = document.getElementById("child");
+        if (child !== null) {
+            parrent.removeChild(child);
+        }
+        document.getElementById("resultss").style.display = "initial";
+        if (old_ajax) {
+            old_ajax.abort();
+        }
+        clearTimeout(search);
+        search = setTimeout(function () {
+
+            old_ajax = $.ajax({
+                url: "http://localhost:8081/search-contact-by-nickwithJson",
+                data: {"key-nickname": document.getElementById("searchByNickname").value, "eventId": document.getElementById("current-eventId").value}
+            }).done(function (body) {
+                if (body.username === null) {
+                    document.getElementById("resultss").style.display = "none";
+                    document.getElementById("contactUserList").style.display = "initial";
+                    return;
+                }
+                child = document.createElement("div");
+                child.id = "child";
+                parrent.appendChild(child);
+                for (var i = 0; i < body.length; i++) {
+                    var box = document.createElement("div");// div-որը պարունակում է նկարը անունը և հրավիրելու button@
+                    box.style.overflow = "hidden";
+                    var imageDiv = document.createElement("div");
+                    child.appendChild(box);
+                    box.appendChild(imageDiv);
+                    var infoDiv = document.createElement("div");
+                    box.appendChild(infoDiv);
+                    imageDiv.style.cssFloat = "left";
+                    imageDiv.style.width = "20%";
+                    imageDiv.style.height = "20%";
+                    infoDiv.style.width = "80%";
+                    infoDiv.style.height = "20%";
+                    infoDiv.style.cssFloat = "right";
+                    var img = document.createElement("img");
+                    img.src = "/image?fileName=" + body[i].picUrl;
+                    img.style.width = "90%";
+                    imageDiv.appendChild(img);
+                    var dl = document.createElement("dl");
+                    infoDiv.appendChild(dl);
+                    var dt = document.createElement("dt");
+                    dl.appendChild(dt);
+                    var dtNode = document.createTextNode("Անուն");
+                    dt.appendChild(dtNode);
+                    var dd = document.createElement("dd");
+                    dl.appendChild(dd);
+                    var ddNode = document.createTextNode(body[i].nickname);
+                    dd.appendChild(ddNode);
+                    var span = document.createElement("span");
+                    var stanNode = document.createTextNode(body[i].username);
+                    span.appendChild(stanNode);
+                    dl.appendChild(span);
+                    var invitation = document.createElement("div");
+                    box.appendChild(invitation);
+
+                    if(body[i].isNull===0 || body[i].isNull===3){
+                        var picUrl = body[0].picUrl;
+                        var f = document.createElement("form");
+                        f.setAttribute('method',"post");
+                        f.setAttribute('action',"/invitet");
+                        invitation.appendChild(f);
+
+                        var i = document.createElement("input"); //input element, submit
+                        i.setAttribute('type',"submit");
+                        i.setAttribute('value',"Հրավիրել");
+                        f.appendChild(i);
+
+                        var i1 = document.createElement("input"); //input element, hidden for current-Event-Id
+                        i1.setAttribute('type', "hidden");
+                        i1.setAttribute('value',document.getElementById("current-eventId").value);
+                        i1.setAttribute('name',"invitedEventId");
+                        f.appendChild(i1);
+                        var i2 = document.createElement("input"); //input element, hidden for User-Id
+                        i2.id="inputForUserId";
+                        i2.value=picUrl;
+                        i2.setAttribute('type', "hidden");
+                        // i2.setAttribute('value',picUrl);
+                        i2.setAttribute('name',"userPicUrl");
+                        f.appendChild(i2);
+                    }
+                }
+            });
+        },1000);
+    }
+</script>
 
 </body>
 </html>

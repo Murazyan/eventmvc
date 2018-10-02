@@ -379,12 +379,12 @@ public class UserController {
         return "redirect:/seeContacts";
     }
     @PostMapping("/invitet")
-    public String invitet(RedirectAttributes redirectAttributes,
+    public String invitet(
                          @RequestParam(name = "invitedEventId") int eventId,
-                         @RequestParam(name = "contactUserId") int contactUserId) {
-        User contactuser = userRepository.findAllById(contactUserId);
+                         @RequestParam(name = "userPicUrl") String userPicUrl) {
+        User contactuser = userRepository.findAllByPicUrl(userPicUrl);
         Event currentEvent = eventRepository.findAllById(eventId);
-        EventUsers cuurrentEventUser = eventUsersRepository.findAllByUserAndEvent(userRepository.findAllById(contactUserId), eventRepository.findAllById(eventId));
+        EventUsers cuurrentEventUser = eventUsersRepository.findAllByUserAndEvent(userRepository.findAllByPicUrl(userPicUrl), eventRepository.findAllById(eventId));
         UserEventNotification userNotification = new UserEventNotification();
         if (cuurrentEventUser == null) {
             EventUsers eventUsers = new EventUsers();
@@ -405,7 +405,7 @@ public class UserController {
             userNotification.setEventUsers(cuurrentEventUser);
         }
         userEventNotificationRepository.save(userNotification);
-        redirectAttributes.addAttribute("eventId", eventId);
+//        redirectAttributes.addAttribute("eventId", eventId);
         return "redirect:/seeContacts";
     }
 

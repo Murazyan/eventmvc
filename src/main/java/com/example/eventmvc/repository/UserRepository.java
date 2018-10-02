@@ -12,9 +12,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findTop3ByNickname(String nickname);
     User findAllById(int id);
     List<User> findAllByUsernameContaining(String username);
+    User findAllByPicUrl(String picUrl);
 
     List<User> findAllByNicknameContaining(String keyNickname);
-
 
 //    @Query("Select c from Registration c where c.place like:place")
 //    List<User> findByPlaceContaining(@Param("place")String place);
