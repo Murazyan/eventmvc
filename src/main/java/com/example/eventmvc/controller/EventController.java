@@ -1,9 +1,10 @@
 package com.example.eventmvc.controller;
 
 import com.example.eventmvc.model.Event;
-import com.example.eventmvc.repository.EventRepository;
-import com.example.eventmvc.repository.EventStatusCRepository;
-import com.example.eventmvc.repository.UserRepository;
+import com.example.eventmvc.model.EventStatus;
+import com.example.eventmvc.model.EventUsers;
+import com.example.eventmvc.model.UserEventNotification;
+import com.example.eventmvc.repository.*;
 import com.example.eventmvc.security.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,12 +16,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Controller
 public class EventController {
@@ -33,9 +33,15 @@ public class EventController {
 
     @Autowired
     private EventRepository eventRepository;
-    @Autowired
-    private EventStatusCRepository  eventStatusCRepository;
 
+    @Autowired
+    private EventUsersRepository eventUsersRepository;
+
+    @Autowired
+    private UserEventStatusRepository userEventStatusRepository;
+
+    @Autowired
+    private UserEventNotificationRepository userEventNotificationRepository;
 
     @PostMapping("/add-event")
     public String addUser(@AuthenticationPrincipal CurrentUser currentUser,
@@ -50,6 +56,7 @@ public class EventController {
         multipartFile.transferTo(new File(imageUploadDir + filName));
         event.setCreaterUser(currentUser.getUser());
         event.setPicUrl(filName);
+        event.setEventStatus(EventStatus.Ընթացիկ);
         eventRepository.save(event);
         return "redirect:/user_page";
     }
@@ -59,7 +66,7 @@ public class EventController {
     public String pageRegister(
             ModelMap modelMap) {
         modelMap.addAttribute("event", new Event());
-        modelMap.addAttribute("allstatus", eventStatusCRepository.findAll());
+
         return "add-event";
     }
 
@@ -67,9 +74,26 @@ public class EventController {
     public String seeEvent(ModelMap modelMap,
                            @AuthenticationPrincipal CurrentUser currentUser,
                            @RequestParam(value = "eventId") int eventId) {
+
         Event event = eventRepository.findAllById(eventId);
         modelMap.addAttribute("current_event", event);
         return "see-event";
+    }
+
+    @PostMapping("/cancelEvent")
+    public String cancelEvent(RedirectAttributes redirectAttributes,
+                              @RequestParam(name = "canceledEventId")int eventId,
+                              @RequestParam(name = "contactUserId") String contactUserId){
+        EventUsers eventUser = eventUsersRepository.findAllByUserAndEvent(userRepository.findAllById(Integer.parseInt(contactUserId)), eventRepository.findAllById(eventId));
+        eventUser.setUserStatus(userEventStatusRepository.findAllById(3));
+        userEventNotificationRepository.save(UserEventNotification.builder()
+                .readingStatus(false)
+                .eventUsers(eventUser)
+                .notificationNumber(6)
+                .build());
+        eventUsersRepository.save(eventUser);
+        redirectAttributes.addAttribute("eventId", eventId);
+        return "redirect:/seeContacts";
     }
 
 

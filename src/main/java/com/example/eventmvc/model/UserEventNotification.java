@@ -13,20 +13,20 @@ import javax.persistence.*;
 @Data
 @Builder
 @Entity
-@Table(name = "event_users")
-public class EventUsers {
+@Table(name = "eventuser_notification")
+public class UserEventNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int id;
+    @Column(name = "reading_status")
+    private boolean readingStatus;
     @ManyToOne
-    private User user;
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    private Event event;
-    @ManyToOne
-    private UserEventStatus userStatus;
-//    @ManyToOne
-//    private UserNotification usernotification;
+    private EventUsers eventUsers;
+    @Column(name = "notification_number")
+    private int notificationNumber;
+    @Column(name = "notification_Date")
+    private String notificationDate;
 
 
 }

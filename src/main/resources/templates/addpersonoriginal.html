@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <title>Իրադարձությունների վերահսկում</title>
     <link rel="stylesheet" type="text/css" href="css/mystyle.css">
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
 </head>
 <body style='background-image: url("images/belyiy-fon-white-background.jpg")'>
-<input type="hidden" th:value="${eventId}" th:name="hiden" id="current-eventId">
 <div style="width: 200px; margin: auto">
     <div style="">
         <span style="color: #0E76A8"><b>Որոնում ըստ</b></span> <br/>
@@ -24,20 +22,19 @@
     <div class="searchByName" style="width: 50%; float: right;">
         <form action="searchEvent" method="post" class="example">
             <div class="input-group" style="margin: auto; width: 500px;">
-                <input type="text" class="form-control" id="searchByNickname" placeholder="Որոնում ըստ անվան..."
-                       aria-describedby="basic-addon2" name="eventName" onkeydown="myFunction2()"
-                       onkeypress="myFunction2()">
+                <input type="text" class="form-control" placeholder="Որոնում ըստ անվան..."
+                       aria-describedby="basic-addon2" name="eventName">
                 <button type="submit" class="but" onmousemove="show()" onmouseout="hide()"><span class="tooltiptext2">Փնտրել</span>
                 </button>
+
             </div>
         </form>
     </div>
     <div class="searchByElpost" style="width: 50%; float: right">
         <form action="searchEvent" method="post" class="example">
             <div class="input-group" style="margin: auto; width: 500px">
-                <input type="text" class="form-control" id="searchByUsername" placeholder="Որոնում ըստ էլ-հասցեի..."
-                       aria-describedby="basic-addon2" name="eventName" onkeypress="myFunction()"
-                       onkeydown="myFunction()">
+                <input type="text" class="form-control" placeholder="Որոնում ըստ էլ-հասցեի..."
+                       aria-describedby="basic-addon2" name="eventName">
                 <button type="submit" class="but" onmousemove="show()" onmouseout="hide()"><span class="tooltiptext2">Փնտրել</span>
                 </button>
 
@@ -46,26 +43,45 @@
     </div>
 
 </div>
-<div id="resultss">
-    <div id="child"></div>
+<div id="results">
 
 </div>
-<div id="results"></div>
-<script src="jsCode/addperson.js"></script>
-<script src="jsCode/addperson1.js"></script>
+<div>
+    <!--<article th:each="c:${contactUsers}">-->
+    <!--<div style="width: 150px; height: 150px">-->
+    <!--<div style="overflow: hidden;float: left; width: 500px; vertical-align: text-top">-->
+    <!--<div style="overflow: hidden; vertical-align: text-top; float: left">-->
+    <!--<img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20"-->
+    <!--style="height: 100px">-->
+    <!--</div>-->
+    <!--<div style="overflow: hidden; float:right">-->
+    <!--<h3 style="color:#720E9E; width: 100px">-->
+    <!--<marquee behavior="alternate">Հրավիրել</marquee>-->
+    <!--</h3>-->
+    <!--</div>-->
+    <!--<div style=" overflow: hidden; float: right; width: 250px ;height: 150px" class="tooltip">-->
+    <!--<dl>-->
+    <!--<dt style="border: outset; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1">-->
+    <!--<i>Անուն</i></dt>-->
+    <!--<dd th:text="${c.nickname}"></dd>-->
+    <!--<span class="tooltiptext" th:text="${c.username}"></span>-->
 
-<div id="contactUserList">
+    <!--</dl>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<hr style="border: dashed #d2b1b3 1px"/>-->
+    <!--</article>-->
     <article th:each="c:${contactUsers}">
-        <div style="width: 150px; height: 150px" class="a">
-            <div style="overflow: hidden;float: left; width: 719px; vertical-align: text-top" class="b">
-                <div style="overflow: hidden; vertical-align: text-top; float: left" class="c">
+        <div style="width: 150px; height: 150px">
+            <div style="overflow: hidden;float: left; width: 719px; vertical-align: text-top">
+                <div style="overflow: hidden; vertical-align: text-top; float: left">
                     <img th:src="@{/image(fileName=${c.getUser().getPicUrl()})}" alt="" class="img-fluid mb20"
                          style="height: 100px">
                 </div>
                 <div style="overflow: hidden; float:right; width: 151px">
                     <h3 style="color:#720E9E; width: 100px">
                         <form action="/invite" method="post">
-
                             <div th:if="${c.getParticipationCode()==6 || c.getParticipationCode()==3}">
                                 <marquee behavior="alternate"><input type="submit" value="Հրավիրել"
                                                                      style="color: #720E9E; height: 26px">
@@ -80,7 +96,7 @@
                             <form action="/cancelEvent" method="post">
                                 <input type="submit" value="Չեղարկել հրավերը"
                                        style="color: #720E9E; height: 26px; width: 150px">
-                                <input type="hidden" id="currentEventId" th:name="canceledEventId" th:value="${eventId}">
+                                <input type="hidden" th:name="canceledEventId" th:value="${eventId}">
                                 <input type="hidden" th:name="contactUserId" th:value="${c.getUser().id}">
                             </form>
                         </div>
@@ -96,16 +112,74 @@
                     </dl>
                 </div>
             </div>
+
         </div>
         <hr style="border: dashed #d2b1b3 1px"/>
     </article>
 
 </div>
+
+
+<form autocomplete="off" action="/search-contact-by-username">
+    <div class="autocomplete" style="width:300px;">
+        <input id="myInput" type="text" name="key-username" placeholder="Username">
+    </div>
+    <input type="">
+    <input type="submit">
+</form>
+
+
 <script>
 
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<script>
+    var x = document.getElementsByClassName("tooltiptext2");
+    for (var i = 0; i < x.length; i++) {
+        x[i].style.display = "inline";
+    }
 
+    function show() {
+        for (var i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+    }
+
+    function hide() {
+        for (var i = 0; i < x.length; i++) {
+            x[i].style.display = "initial";
+        }
+
+    }
+
+    var radios = document.getElementsByName('radio');
+    var searchByName = document.getElementsByClassName("searchByName")[0];
+    var searchByElpost = document.getElementsByClassName("searchByElpost")[0];
+    searchByElpost.style.display = "none";
+
+    function aa() {
+        searchByName.style.display = "initial";
+        searchByElpost.style.display = "none";
+    }
+
+    function bb() {
+        searchByName.style.display = "none";
+        searchByElpost.style.display = "initial";
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $.ajax({
+            url:"http://localhost:8081/search-contact-by-username"
+
+        }).success(function (body) {
+            $("#results").html(body)
+        });
+    })
+
+
+</script>
 </body>
 </html>

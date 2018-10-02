@@ -22,6 +22,7 @@ public   class Event {
     @Column
     private int id;
     @ManyToOne(cascade = CascadeType.REFRESH)
+
     private User createrUser;
     @Column(name = "creater_visibility")
     private boolean createrVisibility;
@@ -45,8 +46,9 @@ public   class Event {
     private int maxCountPerson;
     @Column(name = "current_count_person")
     private int currentCountPerson;
-    @ManyToOne(cascade = CascadeType.REFRESH)
-    private EventStatusC eventStatus;
+    @Column(name = "event_status")
+    @Enumerated(EnumType.STRING)
+    private EventStatus eventStatus;
     @Column(name = "preferences_themes")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "event_theme",
@@ -57,7 +59,6 @@ public   class Event {
     private double longitude;
     @Column
     private double latitude;
-
     @Override
     public String toString() {
         return "Event{" +

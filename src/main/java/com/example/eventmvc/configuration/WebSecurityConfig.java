@@ -31,6 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/searchUsert").hasAnyAuthority("user")
                 .antMatchers("/addContact").hasAnyAuthority("user")
                 .antMatchers("/addmyevent").hasAnyAuthority("user")
+                .antMatchers("/invite").hasAnyAuthority("user")
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
@@ -45,6 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/home")
                 .and()
                 .rememberMe()
+                .tokenValiditySeconds(2*604800) // 1 week
                 .and();
     }
     @Override

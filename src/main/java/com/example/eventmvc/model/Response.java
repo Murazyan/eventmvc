@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class FindImage {
-    private String byteArray;
+
+public class Response {
+    private int success;
+    private String message;
 }

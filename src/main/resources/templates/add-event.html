@@ -218,12 +218,12 @@
                             <label style="color: #ffffff"> Ավելացնել լուսանկար </label>
                             <input type="file" name="picture">
                         </div>
-                        <div class="form-group1">
-                            <select th:field="*{eventStatus}">
-                                <option th:each="s:${allstatus}" th:value="${s.id}" th:text="${s.status}"></option>
-                                <!--<option th:value="'F'" th:text="Female"></option>-->
-                            </select>
-                        </div>
+                        <!--<div class="form-group1">-->
+                            <!--<select th:field="*{eventStatus}">-->
+                                <!--<option th:each="s:${allstatus}" th:value="${s.id}" th:text="${s.status}"></option>-->
+                                <!--&lt;!&ndash;<option th:value="'F'" th:text="Female"></option>&ndash;&gt;-->
+                            <!--</select>-->
+                        <!--</div>-->
                         <div>
                             <input type="hidden" id="latitude" placeholder="Latitude" th:field="*{latitude}"/>
                             <input type="hidden" id="longitude" placeholder="Longitude" th:field="*{longitude}"/>

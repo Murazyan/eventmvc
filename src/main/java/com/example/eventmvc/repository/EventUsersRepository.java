@@ -1,14 +1,18 @@
 package com.example.eventmvc.repository;
-
-import com.example.eventmvc.model.EventUsers;
-import com.example.eventmvc.model.User;
+import com.example.eventmvc.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface EventUsersRepository extends JpaRepository<EventUsers, Integer> {
 
-List<EventUsers> findAllByUserOrderByIdDesc(User user);
+    List<EventUsers> findAllByUser(User user);
+
+
+    List<EventUsers> findAllByEventAndUser(Event eventById, User user);
+    List<EventUsers> findAllByEvent(Event eventById);
+    List<EventUsers> findAllByUserOrderByIdDesc(User eventById);
+    List<EventUsers> findAllByUserAndEventOrderByIdDesc(User user, Event event);
+    EventUsers findAllByUserAndEvent(User user, Event event);
+
 }

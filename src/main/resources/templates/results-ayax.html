@@ -1,0 +1,47 @@
+
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+
+<article th:each="c:${result}">
+    <div style="width: 150px; height: 150px">
+        <div style="overflow: hidden;float: left; width: 719px; vertical-align: text-top">
+            <div style="overflow: hidden; vertical-align: text-top; float: left">
+                <img th:src="@{/image(fileName=${c.getPicUrl()})}" alt="" class="img-fluid mb20"
+                     style="height: 100px">
+            </div>
+            <div style="overflow: hidden; float:right; width: 151px">
+                <h3 style="color:#720E9E; width: 100px">
+                    <!--<form action="/invite" method="post">-->
+                        <!--<div th:if="${c.getParticipationCode()==6 || c.getParticipationCode()==3}">-->
+                            <!--<marquee behavior="alternate"><input type="submit" value="Հրավիրել"-->
+                                                                 <!--style="color: #720E9E; height: 26px">-->
+                                <!--<input type="hidden" th:name="invitedEventId" th:value="${eventId}">-->
+                                <!--<input type="hidden" th:name="contactUserId" th:value="${c.getUser().id}">-->
+
+                                <!--</input>-->
+                            <!--</marquee>-->
+                        <!--</div>-->
+                    <!--</form>-->
+                    <!--<div th:if="${c.getParticipationCode()==2}">-->
+                        <!--<form action="/cancelEvent" method="post">-->
+                            <!--<input type="submit" value="Չեղարկել հրավերը"-->
+                                   <!--style="color: #720E9E; height: 26px; width: 150px">-->
+                            <!--<input type="hidden" th:name="canceledEventId" th:value="${eventId}">-->
+                            <!--<input type="hidden" th:name="contactUserId" th:value="${c.getUser().id}">-->
+                        <!--</form>-->
+                    <!--</div>-->
+                </h3>
+            </div>
+            <div style=" overflow: hidden; float: right; width: 231px ;height: 150px" class="tooltip">
+                <dl>
+                    <dt style="border: outset; color: #720E9E; background-color: #8CD2E5; border-style: groove; border-color: #21bfc1">
+                        <i>Անուն</i></dt>
+                    <dd th:text="${c.nickname}"></dd>
+                    <span class="tooltiptext" th:text="${c.username}"></span>
+
+                </dl>
+            </div>
+        </div>
+
+    </div>
+    <hr style="border: dashed #d2b1b3 1px"/>
+</article>

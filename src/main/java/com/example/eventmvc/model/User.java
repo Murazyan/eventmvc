@@ -1,5 +1,6 @@
 package com.example.eventmvc.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,52 +9,50 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
 @Entity
 @Table(name = "user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int id;
     @Column
-    private String nickname;
-    @Column
     private String username;
     @Column
-    private String password;
+    private String nickname;
     @Column
-    private String token;
+    private String password;
     @Column(name = "pic_url")
     private String picUrl;
+    @Column(name = "other_info")
+    private String otherInfo;
+    @Column(name = "registration_date")
+    private String registrationDate;
+    @Column(name = "update_date")
+    private Date updateDate;
     @Column
-    private String date;
-    @Column(name = "contact")
+    private String token;
+    @Column
+    private boolean first_access_after_forgot;
+//    @Column
+//    private boolean verify;
     @ManyToMany(fetch = FetchType.EAGER)
-//    @ManyToMany
-    @JoinTable(name = "contact",
+    @JoinTable(name = "contacts",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "contact_user_id"))
     protected List<User> contactUser;
-    private boolean first_access_after_forgot;
+    @Column(name = "preferences_themes")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_preference",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "preference_id"))
+    private List<PreferencesThemes> preferencesThemes;
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id;
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id);
-    }
 }

@@ -2,12 +2,12 @@ package com.example.eventmvc.controller;
 
 import com.example.eventmvc.mail.EmailServiceImpl;
 import com.example.eventmvc.model.*;
-import com.example.eventmvc.repository.EventRepository;
-import com.example.eventmvc.repository.EventUsersRepository;
-import com.example.eventmvc.repository.UserEventStatusRepository;
-import com.example.eventmvc.repository.UserRepository;
+import com.example.eventmvc.repository.*;
 import com.example.eventmvc.security.CurrentUser;
 import com.example.eventmvc.security.JwtTokenUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
@@ -36,11 +37,13 @@ public class UserController {
     @Value("${image.folder}")
     private String imageUploadDir;
 
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private EventRepository eventRepository;
+
 
     @Autowired
     private EventUsersRepository eventUsersRepository;
@@ -58,22 +61,25 @@ public class UserController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private UserEventNotificationRepository userEventNotificationRepository;
+
+//    @Autowired
+//    private UserNotificationRepository userNotificationRepository;
+
 
     String pattern = "YYYY-DD-MM";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
 
-
-
-
     @PostMapping("add-picture")
     public String addImage(@RequestParam(name = "str") String byteArray,
-                                   @RequestParam(name = "currentUserUsername")String currentUserUsername){
+                           @RequestParam(name = "currentUserUsername") String currentUserUsername) {
         User currentUser = userRepository.findAllByUsername(currentUserUsername);
         String picUrl = currentUser.getPicUrl();
-        if(picUrl!=null){
-            File fil = new File(imageUploadDir+currentUser.getPicUrl());
-            if(fil.exists()){
+        if (picUrl != null) {
+            File fil = new File(imageUploadDir + currentUser.getPicUrl());
+            if (fil.exists()) {
                 fil.delete();
             }
         }
@@ -85,8 +91,8 @@ public class UserController {
             ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
             image = ImageIO.read(bis);
             bis.close();
-            String fileName = System.currentTimeMillis()+String.valueOf(Math.random())+".jpg";
-            String path =imageUploadDir+fileName;
+            String fileName = System.currentTimeMillis() + String.valueOf(Math.random()) + ".jpg";
+            String path = imageUploadDir + fileName;
             currentUser.setPicUrl(fileName);
             userRepository.save(currentUser);
             File file = new File(path);
@@ -99,6 +105,7 @@ public class UserController {
         }
         return "redirect:/user_page";
     }
+
     @GetMapping("/home")
     public String index(ModelMap modelMap,
                         @AuthenticationPrincipal UserDetails userDetails) {
@@ -108,8 +115,6 @@ public class UserController {
         modelMap.addAttribute("isLoggedIn", userDetails != null);
         return "index-01";
     }
-
-
 
     @GetMapping("/page-login")
     public String pageLogin(ModelMap map) {
@@ -130,15 +135,16 @@ public class UserController {
         CurrentUser currentUser = (CurrentUser) userDetails;
         if (currentUser != null) {
             User user = currentUser.getUser();
-            if(user.isFirst_access_after_forgot()){
+            if (user.isFirst_access_after_forgot()) {
                 modelMap.addAttribute("currentUserUsername", user.getUsername());
                 return "redirect:/change-password";
             }
             return "redirect:/user_page";
         } else return "redirect:/index";
     }
+
     @GetMapping("/change-password")
-    public String changePassword(){
+    public String changePassword() {
         return "change-password";
     }
 
@@ -159,7 +165,7 @@ public class UserController {
     @GetMapping("/user_page")
     public String bloglgpostgrid(ModelMap modelMap,
                                  @AuthenticationPrincipal CurrentUser currentUser) {
-        if(currentUser==null){
+        if (currentUser == null) {
             return "redirect:/home";
         }
 
@@ -169,7 +175,6 @@ public class UserController {
 
         List<EventUsers> allByUserOrderByIdDesc = eventUsersRepository.findAllByUserOrderByIdDesc(userRepository.findAllById(currentUser.getUser().getId()));
         HashSet<EventUsers> hashSet = new HashSet<>(allByUserOrderByIdDesc);
-//        hashSet.addAll(allByUserOrderByIdDesc);
         List<Event> eventsCurrentUser = new ArrayList<>(hashSet.size());
         for (EventUsers eventUsers : hashSet) {
             eventsCurrentUser.add(eventUsers.getEvent());
@@ -198,8 +203,6 @@ public class UserController {
         emailService.sendSipmleMessage(user.getUsername(), "Իրադարձությունների վերահսկում", text);
         return "redirect:/page-login";
     }
-
-
 
     @GetMapping(value = "/verify")
     public String verify(ModelMap modelMap,
@@ -236,10 +239,14 @@ public class UserController {
     @RequestMapping(value = "/image", method = RequestMethod.GET)
     public void getImageAsByteArray(HttpServletResponse response,
                                     @RequestParam("fileName") String fileName) throws IOException {
-        InputStream in = new FileInputStream(imageUploadDir + fileName);
+        try {
+            InputStream in = new FileInputStream(imageUploadDir + fileName);
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            IOUtils.copy(in, response.getOutputStream());
+        } catch (Exception e) {
+            System.out.println("File not found");
+        }
 
-        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-        IOUtils.copy(in, response.getOutputStream());
     }
 
     @GetMapping("/searchUser")
@@ -260,7 +267,7 @@ public class UserController {
         List<Event> result = new ArrayList<>();
         List<Event> all = eventRepository.findAll();
         for (Event event : all) {
-            if (event.isEventAccessType() && event.getEventName().contains(eventName) && event.getEventStatus().getStatus().equals("Ընթացիկ")) {
+            if (event.isEventAccessType() && event.getEventName().contains(eventName) && event.getEventStatus().name().equals("Ընթացիկ")) {
                 result.add(event);
             }
         }
@@ -291,22 +298,123 @@ public class UserController {
 //        return "shortcode-gmap";
 //    }
 
+    @GetMapping("search-contact-by-username")
+    public String searchContactByUsernameAjax(@RequestParam(name = "key-username") String keyUsername,
+                                              ModelMap modelMap) {
+        System.out.println("Երբ ուղարկվում է html  -" + new Date());
+        List<User> result = userRepository.findAllByUsernameContaining(keyUsername);
+        if (keyUsername.equals("")) {
+            modelMap.addAttribute("result", null);
+        } else {
+            modelMap.addAttribute("result", result);
+        }
+        return "results-ayax";
+    }
+
+
+
+
     @GetMapping("/seeContacts")
     public String seeContacts(ModelMap modelMap,
                               @AuthenticationPrincipal CurrentUser currentUser,
                               @RequestParam(value = "eventId") String eventId) {
+        if (currentUser == null) {
+            return "redirect:/home";
+        }
         User user = currentUser.getUser();
         modelMap.addAttribute("contactUser", user.getContactUser());
         modelMap.addAttribute("eventId", eventId);
+        Event currerntEvent = eventRepository.findAllById(Integer.parseInt(eventId));
+        List<User> contactUser = user.getContactUser();
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Data
+        class Responce { // currentUser-ի կոնտակտները, որում ցույց է տրվում, յուրաքանչյուր կոնտակտի հրավիրվածությունը տվյալ իրադարձությանը
+            private User user;
+            private int participationCode; //ցույց է տալիս, թե տվյալ ընկերը գրանցված է նշված իրադարձությանը, թե ոչ
+        }
+        List<Responce> responces = new ArrayList<>(contactUser.size());
+        for (User user1 : contactUser) {
+            Responce responce = new Responce();
+            responce.setUser(user1);
+            if (eventUsersRepository.findAllByUserAndEventOrderByIdDesc(user1, currerntEvent).size() > 0) {
+                responce.setParticipationCode(eventUsersRepository.findAllByUserAndEvent(user1, currerntEvent).getUserStatus().getId());
+            } else {
+                responce.setParticipationCode(6);
+            }
+            responces.add(responce);
+        }
+        modelMap.addAttribute("contactUsers", responces);
         return "addperson";
+    }
+
+    @PostMapping("/invite")
+    public String invite(RedirectAttributes redirectAttributes,
+                         @RequestParam(name = "invitedEventId") int eventId,
+                         @RequestParam(name = "contactUserId") String contactUserId) {
+        User contactuser = userRepository.findAllById(Integer.parseInt(contactUserId));
+        Event currentEvent = eventRepository.findAllById(eventId);
+        EventUsers cuurrentEventUser = eventUsersRepository.findAllByUserAndEvent(userRepository.findAllById(Integer.parseInt(contactUserId)), eventRepository.findAllById(eventId));
+        UserEventNotification userNotification = new UserEventNotification();
+        if (cuurrentEventUser == null) {
+            EventUsers eventUsers = new EventUsers();
+            eventUsers.setUser(contactuser);
+            eventUsers.setEvent(currentEvent);
+            eventUsers.setUserStatus(userEventStatusRepository.findAllById(2));
+            eventUsersRepository.save(eventUsers);
+            userNotification.setNotificationNumber(4);
+            userNotification.setReadingStatus(false);
+            userNotification.setEventUsers(eventUsers);
+        } else {
+            cuurrentEventUser.setUser(contactuser);
+            cuurrentEventUser.setEvent(currentEvent);
+            cuurrentEventUser.setUserStatus(userEventStatusRepository.findAllById(2));
+            eventUsersRepository.save(cuurrentEventUser);
+            userNotification.setNotificationNumber(4);
+            userNotification.setReadingStatus(false);
+            userNotification.setEventUsers(cuurrentEventUser);
+        }
+        userEventNotificationRepository.save(userNotification);
+        redirectAttributes.addAttribute("eventId", eventId);
+        return "redirect:/seeContacts";
+    }
+    @PostMapping("/invitet")
+    public String invitet(RedirectAttributes redirectAttributes,
+                         @RequestParam(name = "invitedEventId") int eventId,
+                         @RequestParam(name = "contactUserId") int contactUserId) {
+        User contactuser = userRepository.findAllById(contactUserId);
+        Event currentEvent = eventRepository.findAllById(eventId);
+        EventUsers cuurrentEventUser = eventUsersRepository.findAllByUserAndEvent(userRepository.findAllById(contactUserId), eventRepository.findAllById(eventId));
+        UserEventNotification userNotification = new UserEventNotification();
+        if (cuurrentEventUser == null) {
+            EventUsers eventUsers = new EventUsers();
+            eventUsers.setUser(contactuser);
+            eventUsers.setEvent(currentEvent);
+            eventUsers.setUserStatus(userEventStatusRepository.findAllById(2));
+            eventUsersRepository.save(eventUsers);
+            userNotification.setNotificationNumber(4);
+            userNotification.setReadingStatus(false);
+            userNotification.setEventUsers(eventUsers);
+        } else {
+            cuurrentEventUser.setUser(contactuser);
+            cuurrentEventUser.setEvent(currentEvent);
+            cuurrentEventUser.setUserStatus(userEventStatusRepository.findAllById(2));
+            eventUsersRepository.save(cuurrentEventUser);
+            userNotification.setNotificationNumber(4);
+            userNotification.setReadingStatus(false);
+            userNotification.setEventUsers(cuurrentEventUser);
+        }
+        userEventNotificationRepository.save(userNotification);
+        redirectAttributes.addAttribute("eventId", eventId);
+        return "redirect:/seeContacts";
     }
 
     @PostMapping("validMail")
     public String validMail(ModelMap modelMap,
-                                  @RequestParam(value = "email") String email) {
+                            @RequestParam(value = "email") String email) {
         User user = userRepository.findAllByUsername(email);
-        modelMap.addAttribute("userFound", user!=null);
-        if(user!=null){
+        modelMap.addAttribute("userFound", user != null);
+        if (user != null) {
             String newPassword = getRandomPassword(6);
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setFirst_access_after_forgot(true);
@@ -314,7 +422,7 @@ public class UserController {
             String text = "Ձեզ համար գեներացվել է մեկանգամյա օգտագործման  գաղտնաբառ`  " + newPassword;
             emailService.sendSipmleMessage(user.getUsername(), "Իրադարձությունների վերահսկում - գաղտնաբառի վերականգնում", text);
             return "redirect:/page-login";
-        }else{
+        } else {
             modelMap.addAttribute("userNotFound", "Սխալ մուտքագրված էլ-հասցե");
         }
         return "forgot-password";
@@ -339,9 +447,9 @@ public class UserController {
 
     @PostMapping("/changeMyPassword")
     public String changeMyPassword(@AuthenticationPrincipal CurrentUser currentUser,
-                                   @RequestParam(value = "newPass")String newPass){
+                                   @RequestParam(value = "newPass") String newPass) {
         User user = currentUser.getUser();
-        if(user==null){
+        if (user == null) {
             return "redirect:/page-login";
         }
         user.setFirst_access_after_forgot(false);
