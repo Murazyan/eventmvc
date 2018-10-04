@@ -140,7 +140,7 @@ public class UserController {
                 return "redirect:/change-password";
             }
             return "redirect:/user_page";
-        } else return "redirect:/index";
+        } else return "redirect:/home";
     }
 
     @GetMapping("/change-password")
@@ -152,7 +152,7 @@ public class UserController {
     public String addContact(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(value = "userId") Integer userId) {
         User contactUser = userRepository.findAllById(userId);
         // List<User> result = new ArrayList<>();
-        //  result.add(contactUser);
+        //  result.add(contactUser);UserDetails
         CurrentUser currentUser = (CurrentUser) userDetails;
         User user = currentUser.getUser();
         List<User> contactUser1 = user.getContactUser();
@@ -298,18 +298,18 @@ public class UserController {
 //        return "shortcode-gmap";
 //    }
 
-    @GetMapping("search-contact-by-username")
-    public String searchContactByUsernameAjax(@RequestParam(name = "key-username") String keyUsername,
-                                              ModelMap modelMap) {
-        System.out.println("Երբ ուղարկվում է html  -" + new Date());
-        List<User> result = userRepository.findAllByUsernameContaining(keyUsername);
-        if (keyUsername.equals("")) {
-            modelMap.addAttribute("result", null);
-        } else {
-            modelMap.addAttribute("result", result);
-        }
-        return "results-ayax";
-    }
+//    @GetMapping("search-contact-by-username")
+//    public String searchContactByUsernameAjax(@RequestParam(name = "key-username") String keyUsername,
+//                                              ModelMap modelMap) {
+//        System.out.println("Երբ ուղարկվում է html  -" + new Date());
+//        List<User> result = userRepository.findAllByUsernameContaining(keyUsername);
+//        if (keyUsername.equals("")) {
+//            modelMap.addAttribute("result", null);
+//        } else {
+//            modelMap.addAttribute("result", result);
+//        }
+//        return "results-ayax";
+//    }
 
 
 
@@ -345,6 +345,7 @@ public class UserController {
             responces.add(responce);
         }
         modelMap.addAttribute("contactUsers", responces);
+        modelMap.addAttribute("currentUser", currentUser.getUser());
         return "addperson";
     }
 
@@ -364,7 +365,8 @@ public class UserController {
             eventUsersRepository.save(eventUsers);
             userNotification.setNotificationNumber(4);
             userNotification.setReadingStatus(false);
-            userNotification.setEventUsers(eventUsers);
+            userNotification.setUser(contactuser);
+            userNotification.setEvent(currentEvent);
         } else {
             cuurrentEventUser.setUser(contactuser);
             cuurrentEventUser.setEvent(currentEvent);
@@ -372,42 +374,44 @@ public class UserController {
             eventUsersRepository.save(cuurrentEventUser);
             userNotification.setNotificationNumber(4);
             userNotification.setReadingStatus(false);
-            userNotification.setEventUsers(cuurrentEventUser);
+            userNotification.setEvent(currentEvent);
+            userNotification.setUser(contactuser);
         }
         userEventNotificationRepository.save(userNotification);
         redirectAttributes.addAttribute("eventId", eventId);
         return "redirect:/seeContacts";
     }
-    @PostMapping("/invitet")
-    public String invitet(
-                         @RequestParam(name = "invitedEventId") int eventId,
-                         @RequestParam(name = "userPicUrl") String userPicUrl) {
-        User contactuser = userRepository.findAllByPicUrl(userPicUrl);
-        Event currentEvent = eventRepository.findAllById(eventId);
-        EventUsers cuurrentEventUser = eventUsersRepository.findAllByUserAndEvent(userRepository.findAllByPicUrl(userPicUrl), eventRepository.findAllById(eventId));
-        UserEventNotification userNotification = new UserEventNotification();
-        if (cuurrentEventUser == null) {
-            EventUsers eventUsers = new EventUsers();
-            eventUsers.setUser(contactuser);
-            eventUsers.setEvent(currentEvent);
-            eventUsers.setUserStatus(userEventStatusRepository.findAllById(2));
-            eventUsersRepository.save(eventUsers);
-            userNotification.setNotificationNumber(4);
-            userNotification.setReadingStatus(false);
-            userNotification.setEventUsers(eventUsers);
-        } else {
-            cuurrentEventUser.setUser(contactuser);
-            cuurrentEventUser.setEvent(currentEvent);
-            cuurrentEventUser.setUserStatus(userEventStatusRepository.findAllById(2));
-            eventUsersRepository.save(cuurrentEventUser);
-            userNotification.setNotificationNumber(4);
-            userNotification.setReadingStatus(false);
-            userNotification.setEventUsers(cuurrentEventUser);
-        }
-        userEventNotificationRepository.save(userNotification);
-//        redirectAttributes.addAttribute("eventId", eventId);
-        return "redirect:/seeContacts";
-    }
+
+//    @PostMapping("/invitet")
+//    public String invitet(
+//                         @RequestParam(name = "invitedEventId") int eventId,
+//                         @RequestParam(name = "userPicUrl") String userPicUrl) {
+//        User contactuser = userRepository.findAllByPicUrl(userPicUrl);
+//        Event currentEvent = eventRepository.findAllById(eventId);
+//        EventUsers cuurrentEventUser = eventUsersRepository.findAllByUserAndEvent(userRepository.findAllByPicUrl(userPicUrl), eventRepository.findAllById(eventId));
+//        UserEventNotification userNotification = new UserEventNotification();
+//        if (cuurrentEventUser == null) {
+//            EventUsers eventUsers = new EventUsers();
+//            eventUsers.setUser(contactuser);
+//            eventUsers.setEvent(currentEvent);
+//            eventUsers.setUserStatus(userEventStatusRepository.findAllById(2));
+//            eventUsersRepository.save(eventUsers);
+//            userNotification.setNotificationNumber(4);
+//            userNotification.setReadingStatus(false);
+//            userNotification.setEventUsers(eventUsers);
+//        } else {
+//            cuurrentEventUser.setUser(contactuser);
+//            cuurrentEventUser.setEvent(currentEvent);
+//            cuurrentEventUser.setUserStatus(userEventStatusRepository.findAllById(2));
+//            eventUsersRepository.save(cuurrentEventUser);
+//            userNotification.setNotificationNumber(4);
+//            userNotification.setReadingStatus(false);
+//            userNotification.setEventUsers(cuurrentEventUser);
+//        }
+//        userEventNotificationRepository.save(userNotification);
+////        redirectAttributes.addAttribute("eventId", eventId);
+//        return "redirect:/seeContacts";
+//    }
 
     @PostMapping("validMail")
     public String validMail(ModelMap modelMap,

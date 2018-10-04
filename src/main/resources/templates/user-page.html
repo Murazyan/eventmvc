@@ -23,7 +23,7 @@
 <aside class="pushy pushy-right">
     <div class="cart-content">
         <div class="clearfix">
-            <a href="javascript:void(0)" class="pushy-link text-white-gray">Close</a>
+            <a href="javascript:void(0)" class="pushy-link text-white-gray">Փակել</a>
         </div>
         <ul class="list-unstyled">
             <li class="clearfix">
@@ -36,36 +36,36 @@
                     <p class="text-white-gray"><strong>$299.00</strong> x 1</p>
                 </div>
             </li><!--/cart item-->
-            <li class="clearfix">
-                <a href="blog-lg-post-grid" class="float-left">
-                    <img src="images/shop/p2.jpg" class="img-fluid" alt="" width="60">
-                </a>
-                <div class="oHidden">
-                    <span class="close"><i class="ti-close"></i></span>
-                    <h4><a href="blog-lg-post-grid">Men's tour beg</a></h4>
-                    <p class="text-white-gray"><strong>$99.00</strong> x 1</p>
-                </div>
-            </li><!--/cart item-->
-            <li class="clearfix">
-                <a href="blog-lg-post-grid" class="float-left">
-                    <img src="images/shop/p3.jpg" class="img-fluid" alt="" width="60">
-                </a>
-                <div class="oHidden">
-                    <span class="close"><i class="ti-close"></i></span>
-                    <h4><a href="blog-lg-post-grid">Women's T-shirts</a></h4>
-                    <p class="text-white-gray"><strong>$199.00</strong> x 1</p>
-                </div>
-            </li><!--/cart item-->
-            <li class="clearfix">
+            <!--<li class="clearfix">-->
+                <!--<a href="blog-lg-post-grid" class="float-left">-->
+                    <!--<img src="images/shop/p2.jpg" class="img-fluid" alt="" width="60">-->
+                <!--</a>-->
+                <!--<div class="oHidden">-->
+                    <!--<span class="close"><i class="ti-close"></i></span>-->
+                    <!--<h4><a href="blog-lg-post-grid">Men's tour beg</a></h4>-->
+                    <!--<p class="text-white-gray"><strong>$99.00</strong> x 1</p>-->
+                <!--</div>-->
+            <!--</li>&lt;!&ndash;/cart item&ndash;&gt;-->
+            <!--<li class="clearfix">-->
+                <!--<a href="blog-lg-post-grid" class="float-left">-->
+                    <!--<img src="images/shop/p3.jpg" class="img-fluid" alt="" width="60">-->
+                <!--</a>-->
+                <!--<div class="oHidden">-->
+                    <!--<span class="close"><i class="ti-close"></i></span>-->
+                    <!--<h4><a href="blog-lg-post-grid">Women's T-shirts</a></h4>-->
+                    <!--<p class="text-white-gray"><strong>$199.00</strong> x 1</p>-->
+                <!--</div>-->
+            <!--</li>&lt;!&ndash;/cart item&ndash;&gt;-->
+            <!--<li class="clearfix">-->
 
-                <div class="float-right">
-                    <a href="blog-lg-post-grid" class="btn btn-primary">Checkout</a>
-                </div>
-                <h4 class="text-white">
-                    <small>Subtotal -</small>
-                    $49.99
-                </h4>
-            </li><!--/cart item-->
+                <!--<div class="float-right">-->
+                    <!--<a href="blog-lg-post-grid" class="btn btn-primary">Checkout</a>-->
+                <!--</div>-->
+                <!--<h4 class="text-white">-->
+                    <!--<small>Subtotal -</small>-->
+                    <!--$49.99-->
+                <!--</h4>-->
+            <!--</li>&lt;!&ndash;/cart item&ndash;&gt;-->
         </ul>
     </div>
 </aside>
@@ -466,6 +466,7 @@
         </div>
     </form>
     <a href="/add-image"><h3>Ավելացնել նոր լուսանկար</h3></a>
+    <a href="javascript:void(0)" class="menu-btn"><i onclick="seeAllNotification()"> Ծանուցումներ</i> <span class="badge badge-default" style=" font-family: Verdana">3</span></a>
 </div><!--/col-->
 <div class="container mb30">
 
@@ -604,6 +605,7 @@
 <!-- jQuery first, then Tether, then Bootstrap JS. -->
 <script src="js/plugins/plugins.js"></script>
 <script src="js/assan.custom.js"></script>
+<script src="js/assan.custom.js"></script>
 <script>
 
     setTimeout(function () {
@@ -613,18 +615,7 @@
     var q = document.getElementsByClassName("ereval")[0];
     q.style.display = "none";
 
-    function myFunction() {
-        t.style.display = "none";
-        var x = document.getElementsByClassName("col-md-4 post-masonry mb40");
-        for (var i = 0; i < x.length; i++) {
-            x[i].style.display = "none";
-        }
 
-        var z = document.getElementsByClassName("ereval");
-        for (var i = 0; i < z.length; i++) {
-            z[i].style.display = "initial"
-        }
-    }
 
     function myFunction1() {
         var x = document.getElementsByClassName("col-md-4 post-masonry mb40");

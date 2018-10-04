@@ -21,12 +21,16 @@ public class UserEventNotification {
     private int id;
     @Column(name = "reading_status")
     private boolean readingStatus;
-    @ManyToOne
-    private EventUsers eventUsers;
+//    @ManyToOne
+//    private EventUsers eventUsers;
     @Column(name = "notification_number")
     private int notificationNumber;
     @Column(name = "notification_Date")
     private String notificationDate;
+    @ManyToOne
+    private Event event;
+    @ManyToOne
+    private User user;
 
 
 }

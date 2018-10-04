@@ -15,6 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User findAllByPicUrl(String picUrl);
 
     List<User> findAllByNicknameContaining(String keyNickname);
+//    List<User> findAllByUsernameContaining(String keyNickname);
 
 //    @Query("Select c from Registration c where c.place like:place")
 //    List<User> findByPlaceContaining(@Param("place")String place);

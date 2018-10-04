@@ -88,7 +88,8 @@ public class EventController {
         eventUser.setUserStatus(userEventStatusRepository.findAllById(3));
         userEventNotificationRepository.save(UserEventNotification.builder()
                 .readingStatus(false)
-                .eventUsers(eventUser)
+                .event(eventRepository.findAllById(eventId))
+                .user(userRepository.findAllById(Integer.parseInt(contactUserId)))
                 .notificationNumber(6)
                 .build());
         eventUsersRepository.save(eventUser);
