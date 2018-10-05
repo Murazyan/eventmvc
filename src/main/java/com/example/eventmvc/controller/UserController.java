@@ -418,6 +418,7 @@ public class UserController {
                             @RequestParam(value = "email") String email) {
         User user = userRepository.findAllByUsername(email);
         modelMap.addAttribute("userFound", user != null);
+
         if (user != null) {
             String newPassword = getRandomPassword(6);
             user.setPassword(passwordEncoder.encode(newPassword));

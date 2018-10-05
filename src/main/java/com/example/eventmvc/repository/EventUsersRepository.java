@@ -15,5 +15,6 @@ public interface EventUsersRepository extends JpaRepository<EventUsers, Integer>
     List<EventUsers> findAllByUserAndEventOrderByIdDesc(User user, Event event);
     EventUsers findAllByUserAndEvent(User user, Event event);
     List<EventUsers> findTop500ByUserOrderByIdDesc(User user);
+    List<EventUsers> findAllByEventAndUserStatus(Event event, UserEventStatus userEventStatus);
 
 }

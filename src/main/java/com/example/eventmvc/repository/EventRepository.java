@@ -2,6 +2,7 @@ package com.example.eventmvc.repository;
 
 
 import com.example.eventmvc.model.Event;
+import com.example.eventmvc.model.EventStatus;
 import com.example.eventmvc.model.PreferencesThemes;
 import com.example.eventmvc.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
         List<Event> findAllByCreaterUser(User user);
         List<Event> findAllByEventAccessTypeOrderByIdDesc(boolean b);
         Event findAllById(int id);
+        List<Event> findAllByEventStatus(EventStatus eventStatus);
 
 
 

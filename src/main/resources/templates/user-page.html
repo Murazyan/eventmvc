@@ -25,47 +25,7 @@
         <div class="clearfix">
             <a href="javascript:void(0)" class="pushy-link text-white-gray">Փակել</a>
         </div>
-        <ul class="list-unstyled">
-            <li class="clearfix">
-                <a href="blog-lg-post-grid" class="float-left">
-                    <img src="images/shop/p1.jpg" class="img-fluid" alt="" width="60">
-                </a>
-                <div class="oHidden">
-                    <span class="close"><i class="ti-close"></i></span>
-                    <h4><a href="blog-lg-post-grid">Men's Special Watch</a></h4>
-                    <p class="text-white-gray"><strong>$299.00</strong> x 1</p>
-                </div>
-            </li><!--/cart item-->
-            <!--<li class="clearfix">-->
-                <!--<a href="blog-lg-post-grid" class="float-left">-->
-                    <!--<img src="images/shop/p2.jpg" class="img-fluid" alt="" width="60">-->
-                <!--</a>-->
-                <!--<div class="oHidden">-->
-                    <!--<span class="close"><i class="ti-close"></i></span>-->
-                    <!--<h4><a href="blog-lg-post-grid">Men's tour beg</a></h4>-->
-                    <!--<p class="text-white-gray"><strong>$99.00</strong> x 1</p>-->
-                <!--</div>-->
-            <!--</li>&lt;!&ndash;/cart item&ndash;&gt;-->
-            <!--<li class="clearfix">-->
-                <!--<a href="blog-lg-post-grid" class="float-left">-->
-                    <!--<img src="images/shop/p3.jpg" class="img-fluid" alt="" width="60">-->
-                <!--</a>-->
-                <!--<div class="oHidden">-->
-                    <!--<span class="close"><i class="ti-close"></i></span>-->
-                    <!--<h4><a href="blog-lg-post-grid">Women's T-shirts</a></h4>-->
-                    <!--<p class="text-white-gray"><strong>$199.00</strong> x 1</p>-->
-                <!--</div>-->
-            <!--</li>&lt;!&ndash;/cart item&ndash;&gt;-->
-            <!--<li class="clearfix">-->
-
-                <!--<div class="float-right">-->
-                    <!--<a href="blog-lg-post-grid" class="btn btn-primary">Checkout</a>-->
-                <!--</div>-->
-                <!--<h4 class="text-white">-->
-                    <!--<small>Subtotal -</small>-->
-                    <!--$49.99-->
-                <!--</h4>-->
-            <!--</li>&lt;!&ndash;/cart item&ndash;&gt;-->
+        <ul class="list-unstyled" id="ul_notifications">
         </ul>
     </div>
 </aside>
@@ -182,8 +142,8 @@
                                     <div class="col-lg-3">
 
                                         <ul class="mega-inner-nav list-unstyled">
-                                            <li  th:if="${!isLoggedIn}"><a href="page-login"> Մուտք</a></li>
-                                            <li  th:if="${isLoggedIn}"><a href="/logout"> Դուրս գալ</a></li>
+                                            <li th:if="${!isLoggedIn}"><a href="page-login"> Մուտք</a></li>
+                                            <li th:if="${isLoggedIn}"><a href="/logout"> Դուրս գալ</a></li>
                                             <li><a href="page-fpassword">Forget password</a></li>
                                             <li><a href="page-success"> Success page</a></li>
                                             <li><a href="page-maintenence"> Maintenence mode</a></li>
@@ -461,12 +421,13 @@
     <form action="searchEvent" method="post">
         <div class="input-group" style="align-content: right; width: 400px; height: 150px;">
             <input type="text" style="width: 250px; height: 35px" placeholder="Իրադարձության որոնում..."
-                    name="eventName">
+                   name="eventName">
             <button class="input-group-addon" id="basic-addon2"><i class="ti-search"></i></button>
         </div>
     </form>
     <a href="/add-image"><h3>Ավելացնել նոր լուսանկար</h3></a>
-    <a href="javascript:void(0)" class="menu-btn"><i onclick="seeAllNotification()"> Ծանուցումներ</i> <span class="badge badge-default" style=" font-family: Verdana">3</span></a>
+    <a href="javascript:void(0)" class="menu-btn"><i onclick="seeAllNotification()"> Ծանուցումներ</i> <span
+            class="badge badge-default" style=" font-family: Verdana" id="notReadingNotificationCount"></span></a>
 </div><!--/col-->
 <div class="container mb30">
 
@@ -480,7 +441,7 @@
                 <i id="m" class="fa fa-user-circle-o" th:text=" ${currentUser.nickname}"></i>
             </li>
             <!--<li class="list-inline-item">-->
-                <!--<i class="fa fa-calendar-o" th:text=" ${currentUser.date}"></i>-->
+            <!--<i class="fa fa-calendar-o" th:text=" ${currentUser.date}"></i>-->
             <!--</li>-->
             <!--<li class="list-inline-item">-->
             <!--<i class="fa fa-tags"></i> <a href="blog-lg-post-grid">Bootstrap4</a>-->
@@ -504,7 +465,8 @@
         <article class="col-md-4 post-masonry mb40" th:each="e:${eventsOfCurrentUser}">
             <a href="blog-lg-post-grid"> <img th:src="@{/image(fileName=${e.getPicUrl()})}" alt=""
                                               class="img-fluid mb20"></a>
-            <a href="/searchEvent" th:name="eventId" th:value="${e.id}"><h4 class="masonry-title mb0" th:text="${e.eventName}"></h4></a>
+            <a href="/searchEvent" th:name="eventId" th:value="${e.id}"><h4 class="masonry-title mb0"
+                                                                            th:text="${e.eventName}"></h4></a>
             <ul class="post-meta list-inline">
                 <li class="list-inline-item">
                     <i class="fa fa-user-circle-o"></i> <a href="blog-lg-post-grid"
@@ -538,14 +500,15 @@
                                               style=" border-radius: 30%;width: 250px; height: 200px"></a>
             <!--<cl:image th:src="@{/image(fileName=${e.getPicUrl()})}" width="90" height="90" crop="thumb" gravity="face"/>-->
             <form action="/seeEvent" method="get">
-                <input type="submit" th:name="eventId1" th:value="${e.eventName}" class="masonry-title mb0" >
-                <input type="hidden" th:name="eventId" th:value="${e.id}" class="masonry-title mb0" >
+                <input type="submit" th:name="eventId1" th:value="${e.eventName}" class="masonry-title mb0">
+                <input type="hidden" th:name="eventId" th:value="${e.id}" class="masonry-title mb0">
             </form>
 
             <!--<a href="/seeEvent" name="eventId" th:value="${e.id}"><h4 class="masonry-title mb0" th:text="${e.eventName}"></h4></a>-->
             <ul class="post-meta list-inline">
                 <li class="list-inline-item">
-                    <i class="fa fa-user-circle-o"></i> <a href="blog-lg-post-grid" th:text="${e.createrUser.nickname}"></a>
+                    <i class="fa fa-user-circle-o"></i> <a href="blog-lg-post-grid"
+                                                           th:text="${e.createrUser.nickname}"></a>
                 </li>
                 <li class="list-inline-item">
                     <i class="fa fa-calendar-o"></i> <a href="blog-lg-post-grid" th:text="${e.occurDate}"></a>
@@ -606,15 +569,16 @@
 <script src="js/plugins/plugins.js"></script>
 <script src="js/assan.custom.js"></script>
 <script src="js/assan.custom.js"></script>
-<script>
+<script src="jsCode/user_page.js"></script>
 
+
+<script>
     setTimeout(function () {
         var a = document.getElementById("m").innerHTML;
-    },10000)
+    }, 10000)
     var t = document.getElementById("ttt");
     var q = document.getElementsByClassName("ereval")[0];
     q.style.display = "none";
-
 
 
     function myFunction1() {

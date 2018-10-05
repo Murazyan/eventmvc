@@ -6,16 +6,17 @@ import com.example.eventmvc.model.User;
 import com.example.eventmvc.model.UserEventNotification;
 import com.example.eventmvc.repository.*;
 import com.example.eventmvc.security.CurrentUser;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.eventmvc.dto.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,21 +40,45 @@ public class Restcontroller {
     @Autowired
     private UserEventStatusRepository userEventStatusRepository;
 
-//    @PostMapping("/seeAllNotification")
-//    public ResponseEntity seeAllNotification(@AuthenticationPrincipal CurrentUser currentUser){
-//        User current_User = currentUser.getUser();
-//        List<EventUsers> eventUsers = eventUsersRepository.findTop500ByUserOrderByIdDesc(current_User);
-//        for (EventUsers eventUser : eventUsers) {
-//
-//        }
-//
-//        return ResponseEntity.ok();
-//    }
-//
+
+
+    @PostMapping("/seeAllNotification")
+    public ResponseEntity seeAllNotification(@AuthenticationPrincipal CurrentUser currentUser) {
+        User current_User = currentUser.getUser();
+        List<UserEventNotification> notifiactions = userEventNotificationRepository.findTop400ByUserOrderByIdDesc(current_User);
+
+        List<NotificationDto> result = new ArrayList<>(notifiactions.size());
+        for (UserEventNotification notifiaction : notifiactions) {
+            notifiaction.setReadingStatus(true);
+            userEventNotificationRepository.save(notifiaction);
+            result.add(NotificationDto.builder()
+                    .eventName(notifiaction.getEvent().getEventName())
+                    .eventPicUrl(notifiaction.getEvent().getPicUrl())
+                    .notificationDate(notifiaction.getNotificationDate())
+                    .notificationNumber(notifiaction.getNotificationNumber())
+                    .build());
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/notReadingNotificationCount")
+    public ResponseEntity notReadingNotificationCount(@AuthenticationPrincipal CurrentUser currentUser) {
+        User user;
+        try {
+            user = currentUser.getUser();
+        }catch (NullPointerException e){
+            return ResponseEntity.ok(NotReadingNotificationCount.builder()
+                    .notReadingNotificationCount(-1)
+                    .build());
+        }
+        return ResponseEntity.ok(NotReadingNotificationCount.builder()
+                .notReadingNotificationCount(userEventNotificationRepository.countAllByUserAndReadingStatus(user, false))
+                .build());
+    }
 
     @PostMapping("search-contact-by-username")
     public ResponseEntity searchContactByUsernameAjax(@RequestParam(name = "key-username") String userUsername,
-                                                              @RequestParam(name = "eventId") int eventId) {
+                                                      @RequestParam(name = "eventId") int eventId) {
         Event currentEvent = eventRepository.findAllById(eventId);
         if (userUsername.equals("")) {
             return ResponseEntity.ok(Result.builder()
@@ -89,19 +114,19 @@ public class Restcontroller {
 
     @PostMapping("/cancelEventWithAyax")
     public ResponseEntity cancelEvent(@RequestParam(name = "userId") int userId,
-                              @RequestParam(name = "eventId") int eventId,
-                              @RequestParam(name = "inputValue") String inputValue){
+                                      @RequestParam(name = "eventId") int eventId,
+                                      @RequestParam(name = "inputValue") String inputValue) {
         User user = userRepository.findAllById(userId);
         Event currentEvent = eventRepository.findAllById(eventId);
         EventUsers eventAndUser = eventUsersRepository.findAllByUserAndEvent(user, currentEvent);
-            eventAndUser.setUserStatus(userEventStatusRepository.findAllById(3));
-            eventUsersRepository.save(eventAndUser);
-            userEventNotificationRepository.save(UserEventNotification.builder()
-                    .notificationNumber(6)
-                    .event(currentEvent)
-                    .user(user)
-                    .readingStatus(false)
-                    .build());
+        eventAndUser.setUserStatus(userEventStatusRepository.findAllById(3));
+        eventUsersRepository.save(eventAndUser);
+        userEventNotificationRepository.save(UserEventNotification.builder()
+                .notificationNumber(6)
+                .event(currentEvent)
+                .user(user)
+                .readingStatus(false)
+                .build());
         List<User> results = userRepository.findAllByNicknameContaining(inputValue);
         List<Result> json = new ArrayList<>(results.size());
         for (User result : results) {
@@ -130,19 +155,19 @@ public class Restcontroller {
 
     @PostMapping("/cancelEventWithAyaxByUSername")
     public ResponseEntity cancelEventByUSername(@RequestParam(name = "userId") int userId,
-                              @RequestParam(name = "eventId") int eventId,
-                              @RequestParam(name = "inputValue") String inputValue){
+                                                @RequestParam(name = "eventId") int eventId,
+                                                @RequestParam(name = "inputValue") String inputValue) {
         User user = userRepository.findAllById(userId);
         Event currentEvent = eventRepository.findAllById(eventId);
         EventUsers eventAndUser = eventUsersRepository.findAllByUserAndEvent(user, currentEvent);
-            eventAndUser.setUserStatus(userEventStatusRepository.findAllById(3));
-            eventUsersRepository.save(eventAndUser);
-            userEventNotificationRepository.save(UserEventNotification.builder()
-                    .notificationNumber(6)
-                    .user(user)
-                    .event(currentEvent)
-                    .readingStatus(false)
-                    .build());
+        eventAndUser.setUserStatus(userEventStatusRepository.findAllById(3));
+        eventUsersRepository.save(eventAndUser);
+        userEventNotificationRepository.save(UserEventNotification.builder()
+                .notificationNumber(6)
+                .user(user)
+                .event(currentEvent)
+                .readingStatus(false)
+                .build());
         List<User> results = userRepository.findAllByUsernameContaining(inputValue);
         List<Result> json = new ArrayList<>(results.size());
         for (User result : results) {
@@ -171,7 +196,7 @@ public class Restcontroller {
 
     @GetMapping("search-contact-by-nickwithJson")
     public ResponseEntity searchContactByNicknameAjax(@RequestParam(name = "key-nickname") String keyNickname,
-                                                              @RequestParam(name = "eventId") int eventId) {
+                                                      @RequestParam(name = "eventId") int eventId) {
         Event currentEvent = eventRepository.findAllById(eventId);
         if (keyNickname.equals("")) {
             return ResponseEntity.ok(Result.builder()
@@ -208,8 +233,8 @@ public class Restcontroller {
 
     @PostMapping("/inviteWithAyaxByUsername")
     public ResponseEntity inviteWithAyaxByUsername(@RequestParam(name = "userId") int userId,
-                                 @RequestParam(name = "eventId") int eventId,
-                                 @RequestParam(name = "inputValue") String inputValue) {
+                                                   @RequestParam(name = "eventId") int eventId,
+                                                   @RequestParam(name = "inputValue") String inputValue) {
         User user = userRepository.findAllById(userId);
         Event currentEvent = eventRepository.findAllById(eventId);
         EventUsers eventAndUser = eventUsersRepository.findAllByUserAndEvent(user, currentEvent);
@@ -225,7 +250,7 @@ public class Restcontroller {
                     .event(currentEvent)
                     .readingStatus(false)
                     .build());
-        }else{
+        } else {
             eventAndUser.setUserStatus(userEventStatusRepository.findAllById(2));
             eventUsersRepository.save(eventAndUser);
             userEventNotificationRepository.save(UserEventNotification.builder()
@@ -263,8 +288,8 @@ public class Restcontroller {
 
     @PostMapping("/inviteWithAyax")
     public ResponseEntity inviteWithAyax(@RequestParam(name = "userId") int userId,
-                                 @RequestParam(name = "eventId") int eventId,
-                                 @RequestParam(name = "inputValue") String inputValue) {
+                                         @RequestParam(name = "eventId") int eventId,
+                                         @RequestParam(name = "inputValue") String inputValue) {
         User user = userRepository.findAllById(userId);
         Event currentEvent = eventRepository.findAllById(eventId);
         EventUsers eventAndUser = eventUsersRepository.findAllByUserAndEvent(user, currentEvent);
@@ -280,7 +305,7 @@ public class Restcontroller {
                     .event(currentEvent)
                     .readingStatus(false)
                     .build());
-        }else{
+        } else {
             eventAndUser.setUserStatus(userEventStatusRepository.findAllById(2));
             eventUsersRepository.save(eventAndUser);
             userEventNotificationRepository.save(UserEventNotification.builder()
