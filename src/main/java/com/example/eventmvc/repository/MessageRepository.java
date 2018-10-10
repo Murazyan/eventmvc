@@ -15,5 +15,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     List<Message> findAllByEvent(Event event);
     List<Message> findAllByToUser(User user);
     List<Message> findAllByToUserOrEvent(User user, Event event);
+    List<Message> findAllByToUserOrEventOrderByIdDesc(User user, Event event);
+    List<Message> findAllByToUserOrEvent_CreaterUserOrderByIdDesc(User user,User eventCreaterUser);
+
 
 }

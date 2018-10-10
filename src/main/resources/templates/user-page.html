@@ -427,7 +427,8 @@
     </form>
     <a href="/add-image"><h3>Ավելացնել նոր լուսանկար</h3></a>
     <a href="javascript:void(0)" class="menu-btn"><i onclick="seeAllNotification()"> Ծանուցումներ</i> <span
-            class="badge badge-default" style=" font-family: Verdana" id="notReadingNotificationCount"></span></a>
+            class="badge badge-default" style=" font-family: Verdana" id="notReadingNotificationCount"></span></a><br>
+    <a href="/faceMessage">Հաղորդագրություններ</a>
 </div><!--/col-->
 <div class="container mb30">
 
@@ -595,6 +596,27 @@
             y[i].style.display = "none";
         }
     }
+</script>
+
+<script>
+
+    var socket = new WebSocket('ws://localhost:8081/web_socket');
+// Open the socket
+socket.onopen = function(event) {
+    socket.json.send({})
+    // Send an initial message
+    socket.send('I am the client and I\'m listening!');
+
+    // Listen for messages
+    socket.onmessage = function (event) {
+        console.log('Client received a message', event);
+    };
+
+    // Listen for socket closes
+    socket.onclose = function (event) {
+        console.log('Client notified socket has closed', event);
+    };
+}
 </script>
 </body>
 </html>

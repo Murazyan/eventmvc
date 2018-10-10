@@ -21,12 +21,15 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.socket.client.WebSocketClient;
 import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -168,7 +171,6 @@ public class UserController {
         if (currentUser == null) {
             return "redirect:/home";
         }
-
         modelMap.addAttribute("currentUser", userRepository.findAllByUsername(currentUser.getUser().getUsername()));
 
         modelMap.addAttribute("currentUsersEvent", eventRepository.findAllByCreaterUser(currentUser.getUser()));
@@ -416,6 +418,7 @@ public class UserController {
     @PostMapping("validMail")
     public String validMail(ModelMap modelMap,
                             @RequestParam(value = "email") String email) {
+        ServerSocket serverSocket = null;
         User user = userRepository.findAllByUsername(email);
         modelMap.addAttribute("userFound", user != null);
 

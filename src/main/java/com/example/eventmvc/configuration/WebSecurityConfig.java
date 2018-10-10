@@ -33,6 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/addmyevent").hasAnyAuthority("user")
                 .antMatchers("/invite").hasAnyAuthority("user")
                 .antMatchers("/seeAllNotification").hasAnyAuthority("user")
+                .antMatchers("/faceMessage").hasAnyAuthority("user")
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()

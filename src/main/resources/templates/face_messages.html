@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Հաղորդագրություններ</title>
+</head>
+<body style="margin: 0px; padding: 0px;">
+
+<div style="float: left; width: 30%; height: 100vh">
+    <div class="cikl" th:each="c:${messageList}" onmouseover="func1(this)" onmouseout="func2(this)">
+        <div style="float: left; width: 33%">
+            <div th:if="${c.event.createrUser.id==currentUser.id}"><p th:text="${c.toUser.nickname}"></p></div>
+            <div th:if="${c.event.createrUser.id!=currentUser.id}"><p th:text="${c.event.createrUser.nickname}"></p>
+            </div>
+        </div>
+        <div style="float: left; width: 33%"><p th:text="${c.event.eventName}"></p></div>
+        <div style="float: left; width: 33%"><p th:text="${c.event.occurDate}"></p></div>
+    </div>
+</div>
+
+<div style="float: right; width: 70%;height: 100%;  border-color: #720E9E">
+    <div class="center" style=" background-color: #dae5e5; height: 100vh">
+        <p style="transform: translateY(-50%); position:relative; top: 50%; text-align: center; margin: auto"> Ընտրել համապատասխան օգտատերին</p>
+    </div>
+    <textarea class="textarea" placeholder="Մուտգագրեք հաղորդագրություն" style="float: left; width: 80%"></textarea>
+    <input type="submit" value="Ուղարկել" style="float: right; width: 19.5%; height: 38px">
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        var x =  $('.center').height() - $('.textarea').height()
+        console.log(x)
+        $('.center').css('height', x-4)
+    })
+
+    function func1(a) {
+
+        a.style.backgroundColor="#99BECC";
+    }
+    function func2(a) {
+
+        a.backgroundColor="#9fcdff"
+        a.style.backgroundColor="#9fcdff";
+    }
+</script>
+
+</body>
+</html>
