@@ -5,46 +5,46 @@
     <title>Հաղորդագրություններ</title>
 </head>
 <body style="margin: 0px; padding: 0px;">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="jsCode/face_messages.js"></script>
 
-<div style="float: left; width: 30%; height: 100vh">
-    <div class="cikl" th:each="c:${messageList}" onmouseover="func1(this)" onmouseout="func2(this)">
-        <div style="float: left; width: 33%">
-            <div th:if="${c.event.createrUser.id==currentUser.id}"><p th:text="${c.toUser.nickname}"></p></div>
-            <div th:if="${c.event.createrUser.id!=currentUser.id}"><p th:text="${c.event.createrUser.nickname}"></p>
+<div style="float: left; width: 30%; height: 100vh;background-color: #cee5e0">
+    <div class="cikl" th:each="c:${messageList}" onmouseover="func1(this)" onmouseout="func2(this)" style="height: 50px" onclick="alert('ashxaterc');seeMessages(this.children[0].value, this.children[1].value, (this.children[4]).children[0])">
+        <input type="hidden" th:value="${c.message.event.id}">
+        <input type="hidden" th:value="${c.message.toUser.id}">
+        <div style="float: left; width: 33%" >
+            <div th:if="${c.message.event.createrUser.id==currentUser.id}"><p th:text="${c.message.toUser.nickname}"></p></div>
+            <div th:if="${c.message.event.createrUser.id!=currentUser.id}"><p th:text="${c.message.event.createrUser.nickname}"></p>
             </div>
         </div>
-        <div style="float: left; width: 33%"><p th:text="${c.event.eventName}"></p></div>
-        <div style="float: left; width: 33%"><p th:text="${c.event.occurDate}"></p></div>
+        <div style="float: left; width: 33%"><p th:text="${c.message.event.eventName}"></p></div>
+        <div style="float: left; width: 33%" ><p th:if="${c.notReadingCount!=0}" th:text="${c.notReadingCount}"></p></div>
     </div>
 </div>
 
 <div style="float: right; width: 70%;height: 100%;  border-color: #720E9E">
-    <div class="center" style=" background-color: #dae5e5; height: 100vh">
-        <p style="transform: translateY(-50%); position:relative; top: 50%; text-align: center; margin: auto"> Ընտրել համապատասխան օգտատերին</p>
+    <div id="allMessages" style=" background-color: #dae5e5; height: 100vh">
+        <p id="p_Messages" style="transform: translateY(-50%); position:relative; top: 50%; text-align: center; margin: auto"> Ընտրել
+            համապատասխան օգտատերին</p>
     </div>
-    <textarea class="textarea" placeholder="Մուտգագրեք հաղորդագրություն" style="float: left; width: 80%"></textarea>
-    <input type="submit" value="Ուղարկել" style="float: right; width: 19.5%; height: 38px">
+    <textarea class="textarea" placeholder="Մուտգագրեք հաղորդագրություն" style="float: left;max-width: 80%; width: 100%"></textarea>
+    <input type="submit" value="Ուղարկել" style="float: right;max-width: 19%; width: 100%; height: 38px">
 
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
 <script>
-    $(document).ready(function(){
-        var x =  $('.center').height() - $('.textarea').height()
+    $(document).ready(function () {
+        var x = $('.center').height() - $('.textarea').height()
         console.log(x)
-        $('.center').css('height', x-4)
+        $('.center').css('height', x - 4)
     })
 
     function func1(a) {
-
-        a.style.backgroundColor="#99BECC";
+        a.style.backgroundColor = "#99BECC";
     }
-    function func2(a) {
 
-        a.backgroundColor="#9fcdff"
-        a.style.backgroundColor="#9fcdff";
+    function func2(a) {
+        a.style.backgroundColor = "#cee5e0";
     }
 </script>
-
 </body>
 </html>

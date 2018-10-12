@@ -1,9 +1,6 @@
 package com.example.eventmvc.restController;
 
-import com.example.eventmvc.model.Event;
-import com.example.eventmvc.model.EventUsers;
-import com.example.eventmvc.model.User;
-import com.example.eventmvc.model.UserEventNotification;
+import com.example.eventmvc.model.*;
 import com.example.eventmvc.repository.*;
 import com.example.eventmvc.security.CurrentUser;
 import lombok.AllArgsConstructor;
@@ -39,8 +36,6 @@ public class Restcontroller {
 
     @Autowired
     private UserEventStatusRepository userEventStatusRepository;
-
-
 
     @PostMapping("/seeAllNotification")
     public ResponseEntity seeAllNotification(@AuthenticationPrincipal CurrentUser currentUser) {
