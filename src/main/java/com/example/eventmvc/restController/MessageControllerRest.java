@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -38,22 +40,24 @@ public class MessageControllerRest {
 
     @PostMapping("/seeMessages")
     public ResponseEntity seeMessagesByToUserOrEventCreaterUser(@AuthenticationPrincipal CurrentUser currentUser,
-                                                                @RequestParam(name = "eventId")int eventId,
-                                                                @RequestParam(name = "participatingUserId")int participatingUserId){
+                                                                @RequestParam(name = "eventId") int eventId,
+                                                                @RequestParam(name = "participatingUserId") int participatingUserId) {
         Event currentEvent = eventRepository.findAllById(eventId);
-         User participatingUser = userRepository.findAllById(participatingUserId);
-        List<Message> messagesList = messageRepository.findAllByToUserAndEventOrderByIdDesc(participatingUser, currentEvent);
+        User participatingUser = userRepository.findAllById(participatingUserId);
+        Page<Message> messagesList = messageRepository.findAllByToUserAndEventOrderByIdDesc(participatingUser, currentEvent, PageRequest.of(0, 45));
+        int messageCount = messageRepository.countAllByToUserAndEventOrderByIdDesc(participatingUser, currentEvent);
+        int maxCountScroll = messageCount / 45;
         List<Message> changing = messageRepository.findAllByToUserAndEventAndReadingStatusOrderByIdDesc(participatingUser, currentEvent, false);
         for (Message message : changing) {
-            if(message.getToUser().getId()==currentUser.getUser().getId() && message.isCraterSendStatus())
+            if (message.getToUser().getId() == currentUser.getUser().getId() && message.isCraterSendStatus())
                 message.setReadingStatus(true);
-                messageRepository.save(message);
-            if(message.getEvent().getCreaterUser().getId()==currentUser.getUser().getId() && !message.isCraterSendStatus()){
+            messageRepository.save(message);
+            if (message.getEvent().getCreaterUser().getId() == currentUser.getUser().getId() && !message.isCraterSendStatus()) {
                 message.setReadingStatus(true);
                 messageRepository.save(message);
             }
         }
-        List< MessageDto1> result = new ArrayList<>(messagesList.size());
+        List<MessageDto1> result = new ArrayList<>(45);
         for (Message message : messagesList) {
             result.add(MessageDto1.builder()
                     .createrSendStatus(message.isCraterSendStatus())
@@ -65,7 +69,37 @@ public class MessageControllerRest {
                     .participatingUserId(message.getToUser().getId())
                     .build());
         }
-        System.out.println("Veradardzvum  e -  "+result);
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Data
+        class Result {
+            private List<MessageDto1> messagesList;
+            private int maxCountScroll;
+        }
+        return ResponseEntity.ok(new Result(result,maxCountScroll));
+    }
+
+    @PostMapping("/plus45Messages")
+    public ResponseEntity plus45Messages(@AuthenticationPrincipal CurrentUser currentUser,
+                                         @RequestParam(name = "eventId") int eventId,
+                                         @RequestParam(name = "participatingUserId") int participatingUserId,
+                                         @RequestParam(name = "page") int page) {
+        Event currentEvent = eventRepository.findAllById(eventId);
+        User participatingUser = userRepository.findAllById(participatingUserId);
+        Page<Message> messagesList = messageRepository.findAllByToUserAndEventOrderByIdDesc(participatingUser, currentEvent, PageRequest.of(page, 45));
+        List<MessageDto1> result = new ArrayList<>(10);
+        for (Message message : messagesList) {
+            result.add(MessageDto1.builder()
+                    .createrSendStatus(message.isCraterSendStatus())
+                    .eventCreaterUserNickname(message.getEvent().getCreaterUser().getNickname())
+                    .messageDate(message.getDate())
+                    .messageText(message.getText())
+                    .toUserNickname(message.getToUser().getNickname())
+                    .currentUserId(currentUser.getUser().getId())
+                    .participatingUserId(message.getToUser().getId())
+                    .build());
+        }
+
         return ResponseEntity.ok(result);
     }
 

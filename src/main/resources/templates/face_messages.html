@@ -8,8 +8,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="jsCode/face_messages.js"></script>
 
-<div style="float: left; width: 30%; height: 100vh;background-color: #cee5e0">
-    <div class="cikl" th:each="c:${messageList}" onmouseover="func1(this)" onmouseout="func2(this)" style="height: 50px" onclick="alert('ashxaterc');seeMessages(this.children[0].value, this.children[1].value, (this.children[4]).children[0])">
+<div style="float: left; width: 30%; height: 100vh;background-color: #cee5e0; overflow: auto">
+    <div class="cikl" th:each="c:${messageList}" onmouseover="func1(this)" onmouseout="func2(this)"  style="height: 50px" onclick="seeMessages(this.children[0].value, this.children[1].value, (this.children[4]).children[0])">
         <input type="hidden" th:value="${c.message.event.id}">
         <input type="hidden" th:value="${c.message.toUser.id}">
         <div style="float: left; width: 33%" >
@@ -22,8 +22,8 @@
     </div>
 </div>
 
-<div style="float: right; width: 70%;height: 100%;  border-color: #720E9E">
-    <div id="allMessages" style=" background-color: #dae5e5; height: 100vh">
+<div style="float: right; width: 70%;height: 100%;  border-color: #720E9E;">
+    <div id="allMessages" class="allMessages" style=" background-color: #dae5e5; height: 96vh; overflow: auto" onscroll="scrollFunction()">
         <p id="p_Messages" style="transform: translateY(-50%); position:relative; top: 50%; text-align: center; margin: auto"> Ընտրել
             համապատասխան օգտատերին</p>
     </div>
