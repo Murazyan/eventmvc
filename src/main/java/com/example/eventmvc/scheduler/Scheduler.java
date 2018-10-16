@@ -8,19 +8,33 @@ import com.example.eventmvc.model.EventUsers;
 import com.example.eventmvc.model.UserEventNotification;
 import com.example.eventmvc.repository.*;
 
+import com.example.eventmvc.socket.socketEndpoints.SaveAndSendMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableScheduling
+@Component
 public class Scheduler {
-//@Scheduled(cron = "0/1000 * * * * *?"/*,zone = "Armenian/Erevan"*/) Հնարավոր է նաև այս ձևով, այս դեպքում աշխատում է ամեն մեկ վարկյանը մեկ
+
+    @Bean
+    public TaskScheduler taskScheduler() {
+        return new ConcurrentTaskScheduler(Executors.newSingleThreadScheduledExecutor());
+    }
 
     @Autowired
     private UserRepository userRepository;

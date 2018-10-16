@@ -58,16 +58,20 @@ public class MessageControllerRest {
             }
         }
         List<MessageDto1> result = new ArrayList<>(45);
-        for (Message message : messagesList) {
-            result.add(MessageDto1.builder()
-                    .createrSendStatus(message.isCraterSendStatus())
-                    .eventCreaterUserNickname(message.getEvent().getCreaterUser().getNickname())
-                    .messageDate(message.getDate())
-                    .messageText(message.getText())
-                    .toUserNickname(message.getToUser().getNickname())
-                    .currentUserId(currentUser.getUser().getId())
-                    .participatingUserId(message.getToUser().getId())
-                    .build());
+        if (messagesList.getSize() > 0) {
+            for (Message message : messagesList) {
+                System.out.println("creater send status "+ message.isCraterSendStatus());
+                result.add(MessageDto1.builder()
+                        .createrSendStatus(message.isCraterSendStatus())
+                        .eventCreaterUserNickname(message.getEvent().getCreaterUser().getNickname())
+                        .messageDate(message.getDate())
+                        .messageText(message.getText())
+                        .toUserNickname(message.getToUser().getNickname())
+                        .currentUserId(currentUser.getUser().getId())
+                        .participatingUserId(message.getToUser().getId())
+                        .eventCreaterUserId(message.getEvent().getCreaterUser().getId())
+                        .build());
+            }
         }
         @AllArgsConstructor
         @NoArgsConstructor
@@ -76,7 +80,7 @@ public class MessageControllerRest {
             private List<MessageDto1> messagesList;
             private int maxCountScroll;
         }
-        return ResponseEntity.ok(new Result(result,maxCountScroll));
+        return ResponseEntity.ok(new Result(result, maxCountScroll));
     }
 
     @PostMapping("/plus45Messages")
@@ -99,7 +103,6 @@ public class MessageControllerRest {
                     .participatingUserId(message.getToUser().getId())
                     .build());
         }
-
         return ResponseEntity.ok(result);
     }
 

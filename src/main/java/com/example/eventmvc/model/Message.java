@@ -36,17 +36,6 @@ public class Message {
 
 
     @Override
-    public String toString() {
-        return "Message{" +
-                "event=" + event +
-                ", toUser=" + toUser +
-                ", text='" + text + '\'' +
-                ", readingStatus=" + readingStatus +
-                ", craterSendStatus=" + craterSendStatus +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -59,5 +48,18 @@ public class Message {
     public int hashCode() {
 
         return Objects.hash(event, toUser);
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", event=" + event +
+                ", toUser=" + toUser +
+                ", text='" + text + '\'' +
+                ", date='" + date + '\'' +
+                ", readingStatus=" + readingStatus +
+                ", craterSendStatus=" + craterSendStatus +
+                '}';
     }
 }

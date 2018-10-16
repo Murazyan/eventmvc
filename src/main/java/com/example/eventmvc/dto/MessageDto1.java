@@ -17,6 +17,7 @@ public class MessageDto1 {
     private String eventCreaterUserNickname;
     private int currentUserId;
     private int participatingUserId;
+    private int eventCreaterUserId;
 
     @Override
     public String toString() {

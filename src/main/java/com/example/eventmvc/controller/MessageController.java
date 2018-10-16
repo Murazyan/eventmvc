@@ -24,11 +24,6 @@ public class MessageController {
     @GetMapping("/faceMessage")
     public String faceMessage(@AuthenticationPrincipal CurrentUser currentUser,
                               ModelMap modelMap){
-        Page<Message> safasf = messageRepository.findAllByToUser(currentUser.getUser(),   PageRequest.of(2,2));
-
-        for (Message message : safasf) {
-            System.out.println("Message text  is --- "+message.getText());
-        }
         List<Message> messagesList = messageRepository.findAllByToUserOrEvent_CreaterUserOrderByIdDesc(currentUser.getUser(), currentUser.getUser());
         Set<Message> messageSet = new LinkedHashSet<>(messagesList);
         List<MessageDto> result = new ArrayList<>(messageSet.size());
@@ -48,6 +43,7 @@ public class MessageController {
         }
         modelMap.addAttribute("messageList", result);
         modelMap.addAttribute("currentUser", currentUser.getUser());
+        modelMap.addAttribute("currentUserId", currentUser.getUser().getId());
         return "face_messages";
     }
 }

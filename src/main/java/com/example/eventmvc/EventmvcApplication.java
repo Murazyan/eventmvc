@@ -1,23 +1,25 @@
 package com.example.eventmvc;
 
+
+import com.example.eventmvc.socket.socketEndpoints.SaveAndSendMessages;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
+
 import java.net.MalformedURLException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URL;
-import java.sql.SQLOutput;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 
 @SpringBootApplication
-public class EventmvcApplication {
-
+public class EventmvcApplication   {
 
 
     public static void main(String[] args) throws MalformedURLException {
