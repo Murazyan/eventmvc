@@ -7,9 +7,9 @@
 <body style="margin: 0px; padding: 0px;">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="jsCode/face_messages.js"></script>
-<div style="float: left; width: 30%; height: 100vh;background-color: #cee5e0; overflow: auto">
-    <input type="hidden" th:value="${currentUserId}" id="currentUserId">
-    <div class="cikl" th:each="c:${messageList}" onmouseover="func1(this)" onmouseout="func2(this)"  style="height: 50px" onclick="/*count(this.children[5].children[0]);*/seeMessages(this.children[0].value, this.children[1].value, (this.children[4]).children[0],this.children[2].value)">
+<input type="hidden" th:value="${currentUserId}" id="currentUserId">
+<div style="float: left; width: 30%; height: 100vh;background-color: #cee5e0; overflow: auto" id="containerMessages">
+    <div class="cikl" th:each="c:${messageList}" onmouseover="func1(this)" onmouseout="func2(this)"  style="height: 50px" onclick="count(this.children[5].children[0]);seeMessages(this.children[0].value, this.children[1].value, (this.children[4]).children[0],this.children[2].value)">
         <input type="hidden" th:value="${c.message.event.id}">
         <input type="hidden" th:value="${c.message.toUser.id}">
         <input type="hidden" th:value="${c.message.event.createrUser.id}">
@@ -19,7 +19,8 @@
             </div>
         </div>
         <div style="float: left; width: 33%"><p th:text="${c.message.event.eventName}"></p></div>
-        <div style="float: left; width: 33%" ><p th:if="${c.notReadingCount!=0}" th:text="${c.notReadingCount}"></p></div>
+        <div style="float: left; width: 33%" th:if="${c.notReadingCount!=0}"><p  th:text="${c.notReadingCount}"></p></div>
+        <div style="float: left; width: 33%" th:if="${c.notReadingCount==0}"><p text=""></p></div>
     </div>
 </div>
 <div style="float: right; width: 70%;height: 100%;  border-color: #720E9E;">

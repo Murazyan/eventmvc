@@ -60,7 +60,6 @@ public class MessageControllerRest {
         List<MessageDto1> result = new ArrayList<>(45);
         if (messagesList.getSize() > 0) {
             for (Message message : messagesList) {
-                System.out.println("creater send status "+ message.isCraterSendStatus());
                 result.add(MessageDto1.builder()
                         .createrSendStatus(message.isCraterSendStatus())
                         .eventCreaterUserNickname(message.getEvent().getCreaterUser().getNickname())
@@ -101,6 +100,7 @@ public class MessageControllerRest {
                     .toUserNickname(message.getToUser().getNickname())
                     .currentUserId(currentUser.getUser().getId())
                     .participatingUserId(message.getToUser().getId())
+                    .eventCreaterUserId(message.getEvent().getCreaterUser().getId())
                     .build());
         }
         return ResponseEntity.ok(result);

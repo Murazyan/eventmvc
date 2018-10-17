@@ -16,17 +16,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Component
 public class SaveAndSendMessages extends TextWebSocketHandler {
@@ -43,6 +38,7 @@ public class SaveAndSendMessages extends TextWebSocketHandler {
 
     static Map<Integer, Info> webSocketSessions = new TreeMap<>();
 
+
     //Երբ WebSocketSession է փակվում
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -55,22 +51,47 @@ public class SaveAndSendMessages extends TextWebSocketHandler {
         }
     }
 
-    //erb tvyal e uxarkvum
+
+    //erb tvyal e uxarkvum frontic
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
         JSONObject jsonObject = new JSONObject(textMessage.getPayload());
-        JSONObject responseJsonObject = new JSONObject();
+        try {
+            int CURRENT_USER_ID = Integer.parseInt((String) jsonObject.get("CURRENT_USER_ID"));
+            webSocketSessions.put(CURRENT_USER_ID, Info.builder()
+                    .WebSocketSession(session)
+                    .eventCreaterUserId(0)
+                    .participantUserId(0)
+                    .build());
+            System.out.println("avelacav lriv nor sessia datark arjeqov");
+        } catch (JSONException e) {
+        }
         try {
             int currentUserId = Integer.parseInt((String) jsonObject.get("currentUserId"));
             int participantUserId = Integer.parseInt((String) jsonObject.get("participantUserId"));
             int eventCreaterUserId = Integer.parseInt((String) jsonObject.get("eventCreaterUserId"));
-            webSocketSessions.put(currentUserId, Info.builder()
-                    .participantUserId(participantUserId)
-                    .WebSocketSession(session)
-                    .eventCreaterUserId(eventCreaterUserId)
-                    .build());
-        } catch (JSONException e) {
-        }
+            Info info = webSocketSessions.get(currentUserId);
+            if (info == null) {
+                webSocketSessions.put(currentUserId, Info.builder()
+                        .participantUserId(participantUserId)
+                        .WebSocketSession(session)
+                        .eventCreaterUserId(eventCreaterUserId)
+                        .build());
+            }
+            if (info != null /*&& info.getEventCreaterUserId() == 0 && info.getParticipantUserId() == 0*/) {
+                System.out.println("katarvec popoxutyun map-i mej` popoxvec arjeqy");
+                for (Map.Entry<Integer, Info> entry : webSocketSessions.entrySet()) {
+                    if (entry.getKey() == currentUserId) {
+                        entry.setValue(Info.builder()
+                                .participantUserId(participantUserId)
+                                .WebSocketSession(session)
+                                .eventCreaterUserId(eventCreaterUserId)
+                                .build());
+                    }
+
+                }
+            }
+        } catch (JSONException e) {}
         try {
             String messageText = (String) jsonObject.get("messageText");
             int currentEventId = Integer.parseInt((String) jsonObject.get("currentEventId"));
@@ -80,6 +101,7 @@ public class SaveAndSendMessages extends TextWebSocketHandler {
             User currentUser = userRepository.findAllById(currentUserId);
             User participantUser = userRepository.findAllById(participantUserId);
             if (currentUser.getId() == participantUser.getId()) { // սեսայով ուղարկելու ենք իրադարձության ստեղծողին
+
                 messageRepository.save(Message.builder()
                         .craterSendStatus(false)
                         .event(event)
@@ -88,22 +110,29 @@ public class SaveAndSendMessages extends TextWebSocketHandler {
                         .toUser(currentUser)
                         .build());
                 int id = event.getCreaterUser().getId();
-
-                responseJsonObject.put("currentUserId", currentUserId);
-                responseJsonObject.put("messageToUserId", currentUser.getId());
-                responseJsonObject.put("messageEventCreaterUserId", event.getCreaterUser().getId());
-                responseJsonObject.put("createrSendStatus", false);
-                responseJsonObject.put("messageToUserNickname", currentUser.getNickname());
-                responseJsonObject.put("messageEventCreaterUserNickname", event.getCreaterUser().getNickname());
-                responseJsonObject.put("messageText", messageText);
-
-
-                System.out.println(" namakay uxarkvum e " + currentUser.getNickname() + "i koxmic " + event.getCreaterUser().getNickname() + "in");
-                String res = messageText + "_:_" + currentUserId + "_:_" + event.getCreaterUser().getId() + "_:_" + 0;
-                webSocketSessions.get(id).getWebSocketSession().sendMessage(new TextMessage(res));
+                Info info = webSocketSessions.get(id);
+                if (info != null && info.getParticipantUserId() ==currentUserId && info.getEventCreaterUserId()==event.getCreaterUser().getId()) {
+                    WebSocketSession webSocketSession = info.getWebSocketSession();
+                    if (webSocketSession.isOpen()) {
+                        String res = messageText + "_:_" + currentUserId + "_:_" + event.getCreaterUser().getId() + "_:_" + 0+"_:_"+event.getId();
+                        webSocketSession.sendMessage(new TextMessage(res));
+                        List<Message> changingMesages = messageRepository.findAllByToUserAndEventAndReadingStatusOrderByIdDesc(currentUser, event, false);//քանի որ ուղարկվող օգտատերը հենց այս պահին մեջն է readingStatus-ը պետք է true դառնա
+                        for (Message changingMesage : changingMesages) {
+                            changingMesage.setReadingStatus(true);
+                        }
+                        messageRepository.saveAll(changingMesages);
+                    }
+                }
+                if(info != null && ((info.getEventCreaterUserId()==0 && info.getParticipantUserId()==0) ||(info.getParticipantUserId() !=currentUserId && info.getEventCreaterUserId()!=event.getCreaterUser().getId()))){
+                    WebSocketSession webSocketSession = info.getWebSocketSession();
+                    System.out.println("uxarkvum e stexcoxin ^_^");
+                    if (webSocketSession.isOpen()) {
+                        String res = event.getId() + "^_^" + currentUserId;
+                        webSocketSession.sendMessage(new TextMessage(res));
+                    }
+                }
             }
-            if (currentUserId == event.getCreaterUser().getId()) {
-
+            if (currentUserId == event.getCreaterUser().getId()) { //սեսայով ուղարկելու ենք իրադարձության մասնակցին
                 messageRepository.save(Message.builder()
                         .craterSendStatus(true)
                         .event(event)
@@ -111,26 +140,29 @@ public class SaveAndSendMessages extends TextWebSocketHandler {
                         .text(messageText)
                         .toUser(participantUser)
                         .build());
-                Response response = new Response();
-                response.setCreaterSendStatus(true);
-                response.setCurrentUserId(currentUserId);
-                response.setMessageEventCreaterUserId(event.getCreaterUser().getId());
-                response.setMessageToUserId(participantUser.getId());
-                response.setMessageText(messageText);
-                response.setMessageEventCreaterUserNickname(event.getCreaterUser().getNickname());
-                response.setMessageToUserNickname(participantUser.getNickname());
-                System.out.println(response.toString());
+                Info info = webSocketSessions.get(participantUserId);
+                if (info != null && info.getParticipantUserId()== participantUserId && info.getEventCreaterUserId()==event.getCreaterUser().getId()) {
+                    WebSocketSession webSocketSession = info.getWebSocketSession();
+                    if (webSocketSession.isOpen()) {
+                        String res = messageText + "_:_" + participantUserId + "_:_" + event.getCreaterUser().getId() + "_:_" + 1+"_:_"+event.getId();
+                        webSocketSession.sendMessage(new TextMessage(res));
+                        List<Message> changingMesages = messageRepository.findAllByToUserAndEventAndReadingStatusOrderByIdDesc(participantUser, event, false);//քանի որ ուղարկվող օգտատերը հենց այս պահին մեջն է readingStatus-ը պետք է true դառնա
+                        for (Message changingMesage : changingMesages) {
+                            changingMesage.setReadingStatus(true);
+                        }
+                        messageRepository.saveAll(changingMesages);
+                    }
+                }
+                if(info != null && ((info.getEventCreaterUserId()==0 && info.getParticipantUserId()==0) || (info.getParticipantUserId()!= participantUserId && info.getEventCreaterUserId()!=event.getCreaterUser().getId()))){
+                    WebSocketSession webSocketSession = info.getWebSocketSession();
+                    System.out.println("uxarkvum e masnakcin ^_^");
+                    if (webSocketSession.isOpen()) {
+                        String res = event.getId() + "^_^" + participantUserId;
+                        webSocketSession.sendMessage(new TextMessage(res));
+                    }
+                }
             }
-            System.out.println("---- messageText - " + messageText);
-
-
-//            String responseJson = "{"+"messageText"+":"+messageText+","+""
-
-//            webSocketSessions.get(participantUserId).getWebSocketSession().sendMessage();
-
-
         } catch (JSONException e) {
-
         }
 
 
