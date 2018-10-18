@@ -112,11 +112,45 @@ public class UserController {
     @GetMapping("/home")
     public String index(ModelMap modelMap,
                         @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails != null) {
-            return "redirect:/user_page";
-        }
+//        if (userDetails != null) {
+//            return "redirect:/user_page";
+//        }
+        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ, true);
         modelMap.addAttribute("isLoggedIn", userDetails != null);
+        modelMap.addAttribute("top8OpenAndCurrentEvents", top8OpenAndCurrentEvents);
         return "index-01";
+    }
+
+    @GetMapping("/carusel")
+    public String carusel(ModelMap modelMap){
+        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ, true);
+        modelMap.addAttribute("event0", top8OpenAndCurrentEvents.get(0));
+        modelMap.addAttribute("event1", top8OpenAndCurrentEvents.get(1));
+        modelMap.addAttribute("event2", top8OpenAndCurrentEvents.get(2));
+        modelMap.addAttribute("event3", top8OpenAndCurrentEvents.get(3));
+        modelMap.addAttribute("event4", top8OpenAndCurrentEvents.get(4));
+        modelMap.addAttribute("event5", top8OpenAndCurrentEvents.get(5) );
+        modelMap.addAttribute("event6", top8OpenAndCurrentEvents.get(6) );
+        modelMap.addAttribute("event7", top8OpenAndCurrentEvents.get(7) );
+
+
+        return "carusel";
+    }
+
+    @GetMapping("/index")
+    public String index1(ModelMap modelMap,
+                        @AuthenticationPrincipal UserDetails userDetails){
+        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ, true);
+        modelMap.addAttribute("event0", top8OpenAndCurrentEvents.get(0));
+        modelMap.addAttribute("event1", top8OpenAndCurrentEvents.get(1));
+        modelMap.addAttribute("event2", top8OpenAndCurrentEvents.get(2));
+        modelMap.addAttribute("event3", top8OpenAndCurrentEvents.get(3));
+        modelMap.addAttribute("event4", top8OpenAndCurrentEvents.get(4));
+        modelMap.addAttribute("event5", top8OpenAndCurrentEvents.get(5) );
+        modelMap.addAttribute("event6", top8OpenAndCurrentEvents.get(6) );
+        modelMap.addAttribute("event7", top8OpenAndCurrentEvents.get(7) );
+        modelMap.addAttribute("isLoggedIn", userDetails != null);
+        return "index";
     }
 
     @GetMapping("/page-login")

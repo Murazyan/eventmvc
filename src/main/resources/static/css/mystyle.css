@@ -80,3 +80,26 @@ form.example::after {
 .but:hover .tooltiptext2 {
     visibility: visible;
 }
+
+
+
+
+/* enable absolute positioning */
+.inner-addon {
+    position: relative;
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+    position: absolute;
+    padding: -25px;
+    pointer-events: all;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  13.4%;}
+/*.right-addon .glyphicon { right: 0px;}*/
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+/*.right-addon input { padding-right: 30px; }*/

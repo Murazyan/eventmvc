@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Carusel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="css/mystyle.css" rel="stylesheet">
+
+</head>
+<body style="margin: 0px; padding: 0px; background-color: #a8ecff">
+
+<div class="jumbotron text-center" style="background-color: #a8e5ff">
+<!--<h2 style="color: #0d397c">Իրադարձությունների վերահսկում</h2>-->
+    <div class="inner-addon left-addon">
+        <img src="png/search-icon.png" style="width: 1%;float: left;transform: translateY(25%);" onmouseover="anim1(this)" onmouseout="anim2(this)" class="glyphicon glyphicon-user" >
+
+        <input type="text" placeholder="Իրադարձության որոնում" style="float: left;  width: 15%; border-radius: 25px;border-color: #a8ecff"class="form-control">
+    </div>
+    <div class="row">
+        <div class="col-sm-2" style="float: right;/* width: 14%*/">
+            <a href="page-login"><h3 onmouseover="func1(this)" onmouseout="func2(this)" style=" border-radius: 25px" th:if="${!isLoggedIn}">Մուտք անձնական էջ</h3></a>
+            <a href="page-login"> <h3 onmouseover="func1(this)" onmouseout="func2(this)" style=" border-radius: 25px" th:if="${isLoggedIn}">Դուրս գալ</h3></a>
+
+        </div>
+        <div class="col-sm-2" style="float: right;/* width: 14%*/">
+            <a href="page-register"><h3 onmouseover="func1(this)" onmouseout="func2(this)" style=" border-radius: 25px">Գրանցվել</h3></a>
+        </div>
+
+        <div class="col-sm-2" style="float: right;/* width: 14%*/">
+            <h3 onmouseover="func1(this)" onmouseout="func2(this)" style=" border-radius: 25px">Մեր մասին</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="width: 90%; height: 90%">
+    <h2 style="text-align: center">Ընթացիկ իրադարձություններ</h2>
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active" th:if="${event0!=null}"></li>
+            <li data-target="#myCarousel" data-slide-to="1" th:if="${event1!=null}"></li>
+            <li data-target="#myCarousel" data-slide-to="2" th:if="${event2!=null}"></li>
+            <li data-target="#myCarousel" data-slide-to="3" th:if="${event3!=null}"></li>
+            <li data-target="#myCarousel" data-slide-to="4" th:if="${event4!=null}"></li>
+            <li data-target="#myCarousel" data-slide-to="5" th:if="${event5!=null}"></li>
+            <li data-target="#myCarousel" data-slide-to="6" th:if="${event6!=null}"></li>
+            <li data-target="#myCarousel" data-slide-to="7" th:if="${event7!=null}"></li>
+        </ol>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" >
+            <div class="item active" th:if="${event0!=null}" style="width: 100%">
+            <a th:href="@{/seeEvent(eventId=${event0.getId()})}"><img th:src="@{/image(fileName=${event0.getPicUrl()})}" alt="Los Angeles" style="width:100%; height: 500px"></a>
+            </div>
+            <div class="item" th:if="${event1!=null}" >
+                <a th:href="@{/seeEvent(eventId=${event1.getId()})}"><img th:src="@{/image(fileName=${event1.getPicUrl()})}" alt="Chicago" style="width:100%; height: 500px"></a>
+            </div>
+            <div class="item" th:if="${event2!=null}" >
+                <a th:href="@{/seeEvent(eventId=${event2.getId()})}"><img th:src="@{/image(fileName=${event2.getPicUrl()})}" alt="Chicago" style="width:100%; height: 500px"></a>
+            </div>
+            <div class="item" th:if="${event3!=null}" >
+                <a th:href="@{/seeEvent(eventId=${event3.getId()})}"><img th:src="@{/image(fileName=${event3.getPicUrl()})}" alt="Chicago" style="width:100%; height: 500px"></a>
+            </div>
+            <div class="item" th:if="${event4!=null}" >
+                <a th:href="@{/seeEvent(eventId=${event4.getId()})}"><img th:src="@{/image(fileName=${event4.getPicUrl()})}" alt="Chicago" style="width:100%; height: 500px"></a>
+            </div>
+            <div class="item" th:if="${event5!=null}" >
+                <a th:href="@{/seeEvent(eventId=${event5.getId()})}"><img th:src="@{/image(fileName=${event5.getPicUrl()})}" alt="Chicago" style="width:100%; height: 500px"></a>
+            </div>
+            <div class="item" th:if="${event6!=null}" >
+                <a th:href="@{/seeEvent(eventId=${event6.getId()})}"><img th:src="@{/image(fileName=${event6.getPicUrl()})}" alt="Chicago" style="width:100%; height: 500px"></a>
+            </div>
+            <div class="item" th:if="${event7!=null}" >
+                <a th:href="@{/seeEvent(eventId=${event7.getId()})}"> <img th:src="@{/image(fileName=${event7.getPicUrl()})}" alt="Chicago" style="width:100%; height: 500px"></a>
+            </div>
+        </div>
+        <!-- Left and right controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+
+<script>
+
+    function func1(a) {
+        a.style.backgroundColor="#5789cc";
+    }
+    function func2(a) {
+        a.style.backgroundColor="#a8e5ff";
+    }
+
+function anim1(teg) {
+        teg.style.width= "2.1%";
+        teg.style.transform="translateY(5%)";
+        teg.style.transform="translateX(-10%)";
+
+
+}
+function anim2(teg) {
+    teg.style.width= "1%";
+    teg.style.transform="translateY(25%)";
+    // teg.style.transform="translateX(0%)";
+}
+</script>
+</body>
+</html>

@@ -17,6 +17,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
         List<Event> findAllByEventAccessTypeOrderByIdDesc(boolean b);
         Event findAllById(int id);
         List<Event> findAllByEventStatus(EventStatus eventStatus);
+        List<Event> findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus eventStatus, boolean status);
 
 
 
