@@ -55,6 +55,7 @@ public class SaveAndSendMessages extends TextWebSocketHandler {
     //erb tvyal e uxarkvum frontic
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+        System.out.println("miacav");
         JSONObject jsonObject = new JSONObject(textMessage.getPayload());
         try {
             int CURRENT_USER_ID = Integer.parseInt((String) jsonObject.get("CURRENT_USER_ID"));

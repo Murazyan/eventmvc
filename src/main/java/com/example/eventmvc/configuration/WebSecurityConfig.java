@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
-                .loginPage("/page-login")
+                .loginPage("/myhtml")
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/loginSuccess")
@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
-                .logoutSuccessUrl("/home")
+                .logoutSuccessUrl("/myhtml")
                 .and()
                 .rememberMe()
                 .tokenValiditySeconds(2*604800) // 1 week

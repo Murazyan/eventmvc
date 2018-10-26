@@ -9,6 +9,8 @@ import com.example.eventmvc.model.UserEventNotification;
 import com.example.eventmvc.repository.*;
 
 import com.example.eventmvc.socket.socketEndpoints.SaveAndSendMessages;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,8 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -31,6 +35,7 @@ import java.util.concurrent.Executors;
 @Component
 public class Scheduler {
 
+private static final int REMINDER_NOTOFICATION_NUMBER = 5;  // Հիշեցում. Այսօր ժամը __:__-ին տեղի է ունենալու ՛՛Իրադարձության անվանում՛՛իրադարձությանը:
     @Bean
     public TaskScheduler taskScheduler() {
         return new ConcurrentTaskScheduler(Executors.newSingleThreadScheduledExecutor());
@@ -54,23 +59,20 @@ public class Scheduler {
     static final String PATTERN = "yyyy-MM-dd";
     static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(PATTERN);
 
-    @Scheduled(fixedDelay = 10800000 /*3 ժամ*/) //1ժամ =3600000
+//    private static final ZoneId ARMENIA_ZONE_ID = ZoneId.of("Asia/Yerevan");
+//    private static LocalTime armenianTime = LocalTime.now(ARMENIA_ZONE_ID);
+    private static final DateTimeZone ARMENIA_DATE_TIME_ZONE = DateTimeZone.forID("Asia/Yerevan");
+    private static final DateTime ARMENIA_DATE_TIME = new DateTime(ARMENIA_DATE_TIME_ZONE);
+
+
+    @Scheduled(fixedDelay = 10800000 /*3 ժամ*/) //1ժամ =3600000 3ժամ=10800000
     public void schedulerForNotificationsReminder() {
-        String date = SIMPLE_DATE_FORMAT.format(new Date());
-        String[] dateInfo = date.split("-");
-        int year = Integer.parseInt(dateInfo[0]);
-        int month = 0;
-        int day = 0;
-        if (dateInfo[1].substring(0, 1).equals("0")) {
-            month = Integer.parseInt(dateInfo[1].substring(1));
-        } else {
-            month = Integer.parseInt(dateInfo[1]);
-        }
-        if (dateInfo[2].substring(0, 1).equals("0")) {
-            day = Integer.parseInt(dateInfo[2].substring(1));
-        } else {
-            day = Integer.parseInt(dateInfo[2]);
-        }
+        int month = ARMENIA_DATE_TIME.getMonthOfYear();
+        int day = ARMENIA_DATE_TIME.getDayOfMonth();
+        int year = ARMENIA_DATE_TIME.getYear();
+        int  hour = ARMENIA_DATE_TIME.getHourOfDay();
+        int minute = ARMENIA_DATE_TIME.getMinuteOfHour();
+
 
         List<Event> events = eventRepository.findAllByEventStatus(EventStatus.Ընթացիկ);
         for (Event event : events) {
@@ -91,11 +93,11 @@ public class Scheduler {
             } else {
                 eventDay = Integer.parseInt(eventDate[2]);
             }
-            int eventHours =0;
+            int eventHour =0;
             if(occurDateInfo[1].substring(0,1).equals("0")){
-                eventHours = Integer.parseInt(occurDateInfo[1].substring(1,2));
+                eventHour = Integer.parseInt(occurDateInfo[1].substring(1,2));
             }else{
-                eventHours = Integer.parseInt(occurDateInfo[1].substring(0,2));
+                eventHour = Integer.parseInt(occurDateInfo[1].substring(0,2));
             }
             int eventMinute = 0;
             if(occurDateInfo[1].split(":")[1].startsWith("0")){
@@ -103,16 +105,22 @@ public class Scheduler {
             }else{
                 eventMinute = Integer.parseInt(occurDateInfo[1].substring(3,5));
             }
+            if(year>=eventYear && month>=eventMonth && day>=eventDay && hour>=eventHour && minute>=eventMinute){
+                event.setEventStatus(EventStatus.Ավարտված);
+                eventRepository.save(event);
+            }
 
-            if (year == eventYear && month == eventMonth && day - 1 == eventDay) {
+            if (year == eventYear && month == eventMonth && day  == eventDay-1) {
                 List<EventUsers> eventUsers = eventUsersRepository.findAllByEventAndUserStatus(event, userEventStatusRepository.findAllById(1)); //այն eventUsers-ները որոնց ստատուսը ՛գրանցված՛ է
                 for (EventUsers eventUser : eventUsers) {
+                    List<UserEventNotification> allByEventAndUserAndNotificationNumber = userEventNotificationRepository.findAllByEventAndUserAndNotificationNumber(event, eventUser.getUser(), REMINDER_NOTOFICATION_NUMBER);
+                    if(allByEventAndUserAndNotificationNumber.size()==0){
                     userEventNotificationRepository.save(UserEventNotification.builder()
                             .user(eventUser.getUser())
                             .event(eventUser.getEvent())
                             .notificationNumber(5)
                             .readingStatus(false)
-                            .build());
+                            .build());}
                 }
             }
 

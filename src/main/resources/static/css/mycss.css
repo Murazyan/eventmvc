@@ -1,0 +1,33 @@
+/*body{*/
+    /*background: #0E993C!important;*/
+/*}*/
+
+.navbar-inverse {
+    background-color: #36465d!important;
+    border-color: #080808!important;
+}
+
+    .navbar {
+        border-radius: 0px!important;
+         border: 0px solid transparent!important;
+}
+.navbar {
+position: relative!important;
+min-height: 50px!important;
+margin-bottom: 20px!important;
+
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+display: block!important;
+}
+
+.nav ,.input-group, .navbar-header{
+    padding: 8px!important;
+}
+
+.navbar-brand{
+    color: #3b003b!important;
+}
+.active{
+    background-color: #3c5579!important;
+}

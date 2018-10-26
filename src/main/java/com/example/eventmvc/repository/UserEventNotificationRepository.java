@@ -15,7 +15,7 @@ public interface UserEventNotificationRepository extends JpaRepository<UserEvent
   List<UserEventNotification> findTop400ByUserOrderByIdDesc(User user);
   int countAllByUserAndReadingStatus(User user, boolean b);
   UserEventNotification findTopByEvent(Event event);
-
+  List<UserEventNotification> findAllByEventAndUserAndNotificationNumber(Event event, User user,int notificationNumber);
 
 
 }

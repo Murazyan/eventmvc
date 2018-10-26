@@ -15,7 +15,7 @@ var currentResult;
 var maxCountScroll;
 var webSocket;
 if ('WebSocket' in window) {
-    webSocket = new WebSocket("ws://" + window.location.host + "/saveAndSendMessages");
+    webSocket = new WebSocket("ws://" + "localhost:8081"/*window.location.host*/ + "/saveAndSendMessages");
 }
 else {
     alert("socket chka")
