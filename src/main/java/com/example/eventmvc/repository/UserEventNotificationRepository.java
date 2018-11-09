@@ -16,6 +16,7 @@ public interface UserEventNotificationRepository extends JpaRepository<UserEvent
   int countAllByUserAndReadingStatus(User user, boolean b);
   UserEventNotification findTopByEvent(Event event);
   List<UserEventNotification> findAllByEventAndUserAndNotificationNumber(Event event, User user,int notificationNumber);
+  List<UserEventNotification> findUserEventNotificationByIdBetween(int  min, int max);//երբ իդ-ն նշված միջակայքի մեջն է
 
 
 }

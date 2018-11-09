@@ -9,6 +9,8 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 import java.util.concurrent.Executors;
 
@@ -16,6 +18,13 @@ import java.util.concurrent.Executors;
 @EnableWebSocket
 public class WebsocketConfig implements WebSocketConfigurer {
 
+//    @Bean
+//    public ServletServerContainerFactoryBean createWebSocketContainer() {
+//        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
+//        container.setMaxTextMessageBufferSize(8192);
+//        container.setMaxBinaryMessageBufferSize(8192);
+//        return container;
+//    }
 
     @Bean
     public WebSocketHandler saveAndSendMessages() {
@@ -28,4 +37,5 @@ public class WebsocketConfig implements WebSocketConfigurer {
         registry.addHandler(saveAndSendMessages(), "/saveAndSendMessages");
 //        registry.addHandler(new MyMessageHandler2(), "/websocket2");
     }
+
 }

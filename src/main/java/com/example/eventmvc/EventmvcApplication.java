@@ -1,8 +1,7 @@
 package com.example.eventmvc;
 
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -31,7 +30,7 @@ public class EventmvcApplication   {
 
 //        String time = new SimpleDateFormat("HH:mm").format(new Date());
 //        System.out.println("time is " +time);
-//        SpringApplication.run(EventmvcApplication.class, args);
+        SpringApplication.run(EventmvcApplication.class, args);
 //        Calendar calendar = Calendar.getInstance();
 //        int i = calendar.get(Calendar.MINUTE);
 //        int vi = calendar.get(Calendar.HOUR);

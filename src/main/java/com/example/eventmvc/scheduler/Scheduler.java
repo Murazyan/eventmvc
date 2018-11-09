@@ -64,7 +64,6 @@ private static final int REMINDER_NOTOFICATION_NUMBER = 5;  // Հիշեցում.
     private static final DateTimeZone ARMENIA_DATE_TIME_ZONE = DateTimeZone.forID("Asia/Yerevan");
     private static final DateTime ARMENIA_DATE_TIME = new DateTime(ARMENIA_DATE_TIME_ZONE);
 
-
     @Scheduled(fixedDelay = 10800000 /*3 ժամ*/) //1ժամ =3600000 3ժամ=10800000
     public void schedulerForNotificationsReminder() {
         int month = ARMENIA_DATE_TIME.getMonthOfYear();
@@ -72,13 +71,11 @@ private static final int REMINDER_NOTOFICATION_NUMBER = 5;  // Հիշեցում.
         int year = ARMENIA_DATE_TIME.getYear();
         int  hour = ARMENIA_DATE_TIME.getHourOfDay();
         int minute = ARMENIA_DATE_TIME.getMinuteOfHour();
-
-
         List<Event> events = eventRepository.findAllByEventStatus(EventStatus.Ընթացիկ);
         for (Event event : events) {
             String occurDate = event.getOccurDate();
-            String[] occurDateInfo = occurDate.split(" ");
-            String[] eventDate = occurDateInfo[0].split("-");
+//            String[] occurDateInfo = occurDate.split(" ");
+            String[] eventDate = occurDate.split("-");
             int eventYear = Integer.parseInt(eventDate[0]);
             int eventMonth = 0;
             if (eventDate[1].substring(0, 1).equals("0")) {
@@ -94,16 +91,16 @@ private static final int REMINDER_NOTOFICATION_NUMBER = 5;  // Հիշեցում.
                 eventDay = Integer.parseInt(eventDate[2]);
             }
             int eventHour =0;
-            if(occurDateInfo[1].substring(0,1).equals("0")){
-                eventHour = Integer.parseInt(occurDateInfo[1].substring(1,2));
+            if(event.getOccurDatehour().substring(0,1).equals("0")){
+                eventHour = Integer.parseInt(event.getOccurDatehour().substring(1,2));
             }else{
-                eventHour = Integer.parseInt(occurDateInfo[1].substring(0,2));
+                eventHour = Integer.parseInt(event.getOccurDatehour().substring(0,2));
             }
             int eventMinute = 0;
-            if(occurDateInfo[1].split(":")[1].startsWith("0")){
-                eventMinute = Integer.parseInt(occurDateInfo[1].substring(4,5));
+            if(event.getOccurDatehour().split(":")[1].startsWith("0")){
+                eventMinute = Integer.parseInt(event.getOccurDatehour().substring(4,5));
             }else{
-                eventMinute = Integer.parseInt(occurDateInfo[1].substring(3,5));
+                eventMinute = Integer.parseInt(event.getOccurDatehour().substring(3,5));
             }
             if(year>=eventYear && month>=eventMonth && day>=eventDay && hour>=eventHour && minute>=eventMinute){
                 event.setEventStatus(EventStatus.Ավարտված);
@@ -115,15 +112,79 @@ private static final int REMINDER_NOTOFICATION_NUMBER = 5;  // Հիշեցում.
                 for (EventUsers eventUser : eventUsers) {
                     List<UserEventNotification> allByEventAndUserAndNotificationNumber = userEventNotificationRepository.findAllByEventAndUserAndNotificationNumber(event, eventUser.getUser(), REMINDER_NOTOFICATION_NUMBER);
                     if(allByEventAndUserAndNotificationNumber.size()==0){
-                    userEventNotificationRepository.save(UserEventNotification.builder()
-                            .user(eventUser.getUser())
-                            .event(eventUser.getEvent())
-                            .notificationNumber(5)
-                            .readingStatus(false)
-                            .build());}
+                        userEventNotificationRepository.save(UserEventNotification.builder()
+                                .user(eventUser.getUser())
+                                .event(eventUser.getEvent())
+                                .notificationNumber(5)
+                                .readingStatus(false)
+                                .build());}
                 }
             }
 
         }
     }
+
+
+//    @Scheduled(fixedDelay = 10800000 /*3 ժամ*/) //1ժամ =3600000 3ժամ=10800000
+//    public void schedulerForNotificationsReminder() {
+//
+//        int month = ARMENIA_DATE_TIME.getMonthOfYear();
+//        int day = ARMENIA_DATE_TIME.getDayOfMonth();
+//        int year = ARMENIA_DATE_TIME.getYear();
+//        int  hour = ARMENIA_DATE_TIME.getHourOfDay();
+//        int minute = ARMENIA_DATE_TIME.getMinuteOfHour();
+//
+//
+//        List<Event> events = eventRepository.findAllByEventStatus(EventStatus.Ընթացիկ);
+//        for (Event event : events) {
+//            String occurDate = event.getOccurDate();
+//            String[] occurDateInfo = occurDate.split(" ");
+//            String[] eventDate = occurDateInfo[0].split("-");
+//            int eventYear = Integer.parseInt(eventDate[0]);
+//            int eventMonth = 0;
+//            if (eventDate[1].substring(0, 1).equals("0")) {
+//                eventMonth = Integer.parseInt(eventDate[1].substring(1));
+//            } else {
+//                eventMonth = Integer.parseInt(eventDate[1]);
+//
+//            }
+//            int eventDay = 0;
+//            if (eventDate[2].substring(0, 1).equals("0")) {
+//                eventDay = Integer.parseInt(eventDate[2].substring(1));
+//            } else {
+//                eventDay = Integer.parseInt(eventDate[2]);
+//            }
+//            int eventHour =0;
+//            if(occurDateInfo[1].substring(0,1).equals("0")){
+//                eventHour = Integer.parseInt(occurDateInfo[1].substring(1,2));
+//            }else{
+//                eventHour = Integer.parseInt(occurDateInfo[1].substring(0,2));
+//            }
+//            int eventMinute = 0;
+//            if(occurDateInfo[1].split(":")[1].startsWith("0")){
+//                eventMinute = Integer.parseInt(occurDateInfo[1].substring(4,5));
+//            }else{
+//                eventMinute = Integer.parseInt(occurDateInfo[1].substring(3,5));
+//            }
+//            if(year>=eventYear && month>=eventMonth && day>=eventDay && hour>=eventHour && minute>=eventMinute){
+//                event.setEventStatus(EventStatus.Ավարտված);
+//                eventRepository.save(event);
+//            }
+//
+//            if (year == eventYear && month == eventMonth && day  == eventDay-1) {
+//                List<EventUsers> eventUsers = eventUsersRepository.findAllByEventAndUserStatus(event, userEventStatusRepository.findAllById(1)); //այն eventUsers-ները որոնց ստատուսը ՛գրանցված՛ է
+//                for (EventUsers eventUser : eventUsers) {
+//                    List<UserEventNotification> allByEventAndUserAndNotificationNumber = userEventNotificationRepository.findAllByEventAndUserAndNotificationNumber(event, eventUser.getUser(), REMINDER_NOTOFICATION_NUMBER);
+//                    if(allByEventAndUserAndNotificationNumber.size()==0){
+//                    userEventNotificationRepository.save(UserEventNotification.builder()
+//                            .user(eventUser.getUser())
+//                            .event(eventUser.getEvent())
+//                            .notificationNumber(5)
+//                            .readingStatus(false)
+//                            .build());}
+//                }
+//            }
+//
+//        }
+//    }
 }

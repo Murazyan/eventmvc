@@ -55,10 +55,11 @@ public   class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "theme_id"))
     private List<PreferencesThemes> preferencesThemes;
-    @Column
-    private double longitude;
-    @Column
-    private double latitude;
+
+    //    @Column(name = "occur_date_year")
+//    private int occurDateYear;
+    @Column(name = "occur_datehour")
+    private String occurDatehour;
     @Override
     public String toString() {
         return "Event{" +
@@ -70,6 +71,10 @@ public   class Event {
                 ", eventStatus=" + eventStatus +
                 '}';
     }
+
+
+
+
 
     @Override
     public boolean equals(Object o) {
