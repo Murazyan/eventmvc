@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 
 @Controller
@@ -76,6 +77,7 @@ public class EventController {
                            @RequestParam(value = "eventId") int eventId) {
 
         Event event = eventRepository.findAllById(eventId);
+
         modelMap.addAttribute("current_event", event);
         return "see-event";
     }
@@ -84,6 +86,7 @@ public class EventController {
     public String cancelEvent(RedirectAttributes redirectAttributes,
                               @RequestParam(name = "canceledEventId")int eventId,
                               @RequestParam(name = "contactUserId") String contactUserId){
+
         EventUsers eventUser = eventUsersRepository.findAllByUserAndEvent(userRepository.findAllById(Integer.parseInt(contactUserId)), eventRepository.findAllById(eventId));
         eventUser.setUserStatus(userEventStatusRepository.findAllById(3));
         userEventNotificationRepository.save(UserEventNotification.builder()
