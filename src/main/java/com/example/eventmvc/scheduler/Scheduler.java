@@ -71,7 +71,7 @@ private static final int REMINDER_NOTOFICATION_NUMBER = 5;  // Հիշեցում.
         int year = ARMENIA_DATE_TIME.getYear();
         int  hour = ARMENIA_DATE_TIME.getHourOfDay();
         int minute = ARMENIA_DATE_TIME.getMinuteOfHour();
-        List<Event> events = eventRepository.findAllByEventStatus(EventStatus.Ընթացիկ);
+        List<Event> events = eventRepository.findAllByEventStatus(EventStatus.Առաջիկա);
         for (Event event : events) {
             String occurDate = event.getOccurDate();
 //            String[] occurDateInfo = occurDate.split(" ");

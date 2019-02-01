@@ -127,7 +127,7 @@ public class UserController {
 //        if (userDetails != null) {
 //            return "redirect:/user_page";
 //        }
-        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ, true);
+        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Առաջիկա, true);
         modelMap.addAttribute("isLoggedIn", userDetails != null);
         modelMap.addAttribute("top8OpenAndCurrentEvents", top8OpenAndCurrentEvents);
         return "index-01";
@@ -135,7 +135,7 @@ public class UserController {
 
     @GetMapping("/carusel")
     public String carusel(ModelMap modelMap){
-        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ, true);
+        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Առաջիկա, true);
         modelMap.addAttribute("event0", top8OpenAndCurrentEvents.get(0));
         modelMap.addAttribute("event1", top8OpenAndCurrentEvents.get(1));
         modelMap.addAttribute("event2", top8OpenAndCurrentEvents.get(2));
@@ -153,16 +153,16 @@ public String myhtml(ModelMap modelMap,
                      @AuthenticationPrincipal UserDetails userDetails){
 
     modelMap.addAttribute("isLoggedIn", userDetails != null);
-    modelMap.addAttribute("lastEvent",eventRepository.findTopByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ,true));
-    modelMap.addAttribute("first3",eventRepository.findAllByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ,true,PageRequest.of(0, 3)));
-    modelMap.addAttribute("second3",eventRepository.findAllByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ,true,PageRequest.of(1, 3)));
-    modelMap.addAttribute("third3",eventRepository.findAllByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ,true,PageRequest.of(2, 3)));
+    modelMap.addAttribute("lastEvent",eventRepository.findTopByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Առաջիկա,true));
+    modelMap.addAttribute("first3",eventRepository.findAllByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Առաջիկա,true,PageRequest.of(0, 3)));
+    modelMap.addAttribute("second3",eventRepository.findAllByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Առաջիկա,true,PageRequest.of(1, 3)));
+    modelMap.addAttribute("third3",eventRepository.findAllByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Առաջիկա,true,PageRequest.of(2, 3)));
         return "myhtml";
 }
     @GetMapping("/index")
     public String index1(ModelMap modelMap,
                         @AuthenticationPrincipal UserDetails userDetails){
-        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Ընթացիկ, true);
+        List<Event> top8OpenAndCurrentEvents = eventRepository.findTop8ByEventStatusAndEventAccessTypeOrderByIdDesc(EventStatus.Առաջիկա, true);
         modelMap.addAttribute("event0", top8OpenAndCurrentEvents.get(0));
         modelMap.addAttribute("event1", top8OpenAndCurrentEvents.get(1));
         modelMap.addAttribute("event2", top8OpenAndCurrentEvents.get(2));
@@ -268,6 +268,7 @@ public String myhtml(ModelMap modelMap,
     public String verify(ModelMap modelMap,
                          @RequestParam("token") String token,
                          @RequestParam("username") String username) {
+
 
         User allByUsername = userRepository.findAllByUsername(username);
         try {
@@ -476,7 +477,7 @@ public String myhtml(ModelMap modelMap,
     @PostMapping("validMail")
     public String validMail(ModelMap modelMap,
                             @RequestParam(value = "email") String email) {
-        ServerSocket serverSocket = null;
+
         User user = userRepository.findAllByUsername(email);
         modelMap.addAttribute("userFound", user != null);
 

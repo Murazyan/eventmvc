@@ -34,7 +34,7 @@ public class WebsocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(saveAndSendMessages(), "/saveAndSendMessages");
+        registry.addHandler(saveAndSendMessages(), "/saveAndSendMessages").setAllowedOrigins("*");
 //        registry.addHandler(new MyMessageHandler2(), "/websocket2");
     }
 

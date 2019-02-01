@@ -184,8 +184,7 @@
 
                 <div >
                     <h3 class="text-white text-left mb30">Ստեղծել նոր իրադարձություն</h3>
-                    <form th:action="@{/add-event}" method="post" th:object="${event}" enctype="multipart/form-data"
-                          onsubmit=" return f()">
+                    <form th:action="@{/add-event}" method="post" th:object="${event}" enctype="multipart/form-data">
                         <div class="form-group1">
                             <input type="text" class="form-control" th:field="*{eventName}" placeholder="Անուն">
                         </div>

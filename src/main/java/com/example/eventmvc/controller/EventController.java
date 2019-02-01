@@ -57,7 +57,7 @@ public class EventController {
         multipartFile.transferTo(new File(imageUploadDir + filName));
         event.setCreaterUser(currentUser.getUser());
         event.setPicUrl(filName);
-        event.setEventStatus(EventStatus.Ընթացիկ);
+        event.setEventStatus(EventStatus.Առաջիկա);
         eventRepository.save(event);
         return "redirect:/user_page";
     }

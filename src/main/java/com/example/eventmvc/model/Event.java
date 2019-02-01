@@ -55,6 +55,12 @@ public   class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "theme_id"))
     private List<PreferencesThemes> preferencesThemes;
+    @Column
+    private double longitude;
+    @Column
+    private double latitude;
+
+
 
     //    @Column(name = "occur_date_year")
 //    private int occurDateYear;
@@ -89,5 +95,21 @@ public   class Event {
     public int hashCode() {
 
         return Objects.hash(id, picUrl);
+    }
+}
+
+
+
+
+
+class Greeter {
+    public void greet() {
+        System.out.println("Hello, world!");
+    }
+}
+class ConcurrentGreeter extends Greeter {
+    public void greet() {
+        Thread t = new Thread(super::greet);
+        t.start();
     }
 }
